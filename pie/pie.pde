@@ -1,5 +1,5 @@
-ArrayList datas = new ArrayList();
-ArrayList descriptions = new ArrayList();
+List<Float> datas = new ArrayList();
+List<String> descriptions = new ArrayList();
 
 float[] startAngles;
 float[] stopAngles;
@@ -10,9 +10,9 @@ float[] stopAngles;
     noStroke();
     loop();
     reset();
-    addData("10", "aaa");
-    addData("20", "bbb");
-    addData("30", "ccc");
+    addData("0.10", "aaa");
+    addData("0.20", "bbb");
+    addData("0.30", "ccc");
     prepare();
  }
  
@@ -21,26 +21,28 @@ float[] stopAngles;
      descriptions = new ArrayList();
  }
 void addData(String value, String desc){
-//   println("addData :"+value+" ; desc=" +desc);
-   datas.add(int(value)); 
+      println(desc + " : value :"+value);
+
+   datas.add(float(value)); 
    descriptions.add(desc); 
  }
 
  void prepare(){
-    //On réinitialise les données
+    //data init
    startAngles = new float[datas.size()];
    stopAngles = new float[datas.size()];
      
-   int sum = 0;
+   float sum = 0;
    for (int i=0; i<datas.size(); i++){
-     sum += (Integer)datas.get(i);
+     sum += datas.get(i);
    } 
- 
+    println("sum :"+sum);
+
     float startAngle = 0;
     float stopAngle = 0;
     for (int i=0; i<datas.size(); i++){
       fill(getColor(i));
-      stopAngle = startAngle + ((Integer)datas.get(i))*TWO_PI /sum; 
+      stopAngle = startAngle + (datas.get(i))*TWO_PI /sum; 
       startAngles[i] = startAngle;
 
       startAngle = stopAngle;  
@@ -91,7 +93,7 @@ void addData(String value, String desc){
  }
  
 color getColor(int i){
-      //Blue /green /orange
+      //color palette
       color[] colors = {#ffd200, #e31b23, #afbd22, #5d87a1, #bec0c2, #9c5708, #98002e, #6db33f, #597b7b, #f47b20, #532e63, #00958f, #215352}; 
       return colors[i%13]; 
 }
