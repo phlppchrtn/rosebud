@@ -3,7 +3,10 @@ List<String> descriptions = new ArrayList();
 
 float[] startAngles;
 float[] stopAngles;
-
+int diameter = 150; 
+//ItemSelected
+int selected = -1;
+ 
  void setup() {
     size(200, 200);
     smooth();
@@ -41,7 +44,6 @@ void addData(String value, String desc){
     float startAngle = 0;
     float stopAngle = 0;
     for (int i=0; i<datas.size(); i++){
-      fill(getColor(i));
       stopAngle = startAngle + (datas.get(i))*TWO_PI /sum; 
       startAngles[i] = startAngle;
 
@@ -49,29 +51,24 @@ void addData(String value, String desc){
       stopAngles[i] = stopAngle;
     }
  }  
- int diameter = 150; 
 
  void draw(){
- //   println("drawDatas !");
-    background(255);
+    background(255); //white
      
     for (int i=0; i<datas.size(); i++){
-  //  print("start :"+startAngles[i]+ ": "); 
-  //  println("stop :"+stopAngles[i]);
-
-      if (i == selected){
-       //  println("selected "+selected);
-      fill(getColor(i), 123);
-         arc(width/2, height/2, diameter+ 20, diameter +20, startAngles[i], stopAngles[i]);
-         fill(#ffffff);
-        arc(width/2, height/2, diameter+ 5, diameter +5, startAngles[i], stopAngles[i]);
-      }
-     fill(getColor(i));
-      arc(width/2, height/2, diameter, diameter, startAngles[i], stopAngles[i]);
-    }
+		if (i == selected){
+			fill(getColor(i), 123); //Color with transparency
+			arc(width/2, height/2, diameter+ 20, diameter +20, startAngles[i], stopAngles[i]);
+			fill(#ffffff);
+			arc(width/2, height/2, diameter+ 5, diameter +5, startAngles[i], stopAngles[i]);
+		}
+//		println("data "+i);
+		fill(getColor(i));
+		arc(width/2, height/2, diameter, diameter, startAngles[i], stopAngles[i]);
+	}
  }
  
- int selected = -1;
+
  void mouseClicked() {
     float angle = atan2(mouseY - height/2, mouseX - width/2);
     if (angle<0){
@@ -94,6 +91,6 @@ void addData(String value, String desc){
  
 color getColor(int i){
       //color palette
-      color[] colors = {#ffd200, #e31b23, #afbd22, #5d87a1, #bec0c2, #9c5708, #98002e, #6db33f, #597b7b, #f47b20, #532e63, #00958f, #215352}; 
+      color[] colors = { #FFD200, #E31B23, #AFBD22, #5D87A1, #BEC0C2, #9C5708, #98002E, #6DB33F, #597B7B, #F47B20, #532E63, #00958F, #215352}; 
       return colors[i%13]; 
 }
