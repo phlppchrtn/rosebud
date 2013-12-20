@@ -1,5 +1,7 @@
 float valeurMax=100;
 
+/* @pjs preload="ruler.svg"; */
+
 void setup() {
   size(500, 500);
   frameRate(30);
@@ -13,7 +15,7 @@ void draw() {
   background( 255 );
 
   PShape icone;
-  icone= loadShape("data/ruler.svg");
+  icone= loadShape("ruler.svg");
 
   shape(icone, 0, 0, 500, 200);
   noStroke();
