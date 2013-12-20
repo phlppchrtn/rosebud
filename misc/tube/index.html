@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+		<script src="processing.js" type="text/javascript"></script>
+		 <style type="text/css">
+			#chart { width: 100px; height: 100px; background: silver; }
+		</style>
+		<script type ="text/javascript">
+			$(document).ready(
+					function(){
+						$("#chart").hide();
+						unSelect();
+					    $("#chart").resizable();
+				}	
+			);
+
+			function unSelect(){
+				$("#selected").fadeOut().text("");
+			}
+			
+			function select(desc){
+				$("#selected").text(desc).fadeIn();
+			}
+			
+			function workflow(sketchId) {
+					var pjs = Processing.getInstanceById(sketchId);
+					pjs.reset();
+					$("li").each(
+						function()	{
+							var val = $(this).attr("value");
+							var desc = $(this).text();
+							pjs.addData(val, desc);	
+						}
+					);	
+					pjs.prepare();
+					$("#chart").slideToggle('slow');
+				}
+		</script>
+
+		</head>
+	<body>
+		<ol id = "stats">
+			<li value="31">attente</li>
+			<li value="25">en cours</li>
+			<li value="15">validé</li>
+			<li value="3">Refusé</li>
+			<li value="18">archivé</li>
+		</ol>
+		<button type="button" onclick="workflow('sketch')">Workflow</button>
+		<hr>
+		<div id="chart">
+			<canvas id="sketch" data-processing-sources="tube.pde"></canvas>  
+		</div>
+		</body>
+</html>

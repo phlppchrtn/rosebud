@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+		<script src="processing.js" type="text/javascript"></script>
+		<script type ="text/javascript">
+			$(document).ready(
+				function(){
+					$("#chart").hide();
+					unSelect();
+				}	
+			);
+
+			function unSelect(){
+				$("#selected").fadeOut().text("");;
+			}
+			
+			function select(desc){
+				$("#selected").text(desc).fadeIn();
+			}
+			
+			function pieMe(sketchId) {
+					var pjs = Processing.getInstanceById(sketchId);
+					pjs.reset();
+					$("li").each(
+						function()	{
+							var val = $(this).attr("value");
+							var desc = $(this).text();
+							pjs.addData(val, desc);	
+						}
+					);	
+					pjs.prepare();
+					$("#chart").slideToggle('slow');
+				}
+		</script>
+
+		</head>
+	<body>
+		<ol id = "stats">
+			<li value="31">Hollande</li>
+			<li value="25">Sarkozy</li>
+			<li value="15">Le Pen</li>
+			<li value="3">Jolly</li>
+			<li value="18">Bayrou</li>
+			<li value="5">Melenchon</li>
+			<li value="1">Poutou</li>
+			<li value="1"> autres</li>
+		</ol>
+		<button type="button" onclick="pieMe('sketch')">Stats Me Up</button>
+		<hr>
+		<div id="chart">
+			<canvas id="sketch" data-processing-sources="pie.pde"></canvas>  
+			<h1 id="selected">mon beau candidat</h1>
+		</div>
+		</body>
+</html>

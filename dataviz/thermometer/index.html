@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+	<script src="processing.js" type="text/javascript"></script>
+	<script type ="text/javascript">
+			(function($) {
+				$.fn.thermo = function(params) { 
+					// Traverser tous les nœuds.
+					this.each(function() {
+                        //on parcours les canvas processing.
+                        var $canvas = $(this);
+						var pjs = Processing.getInstanceById($canvas.attr('id'));
+						pjs.setData(params);
+					});
+					// Permettre le chaînage par jQuery
+					return this;
+			};
+			})(jQuery);
+
+			function unSelect(){
+				$("#selected").fadeOut().text("");;
+			}
+			
+			function select(info){
+				alert("select");
+				$("#selected").text(info).fadeIn();
+			}
+			
+			function chart$() {
+				$("canvas").thermo({ "min" :0, "max": 100, "value":25 });
+			}
+
+			function chart(sketchId) {
+					var pjs = Processing.getInstanceById(sketchId);
+					var data = pjs.createData();
+					data.min = 0;
+					data.max = 100;
+					data.value =75;
+					pjs.setData(data);
+			}
+			
+			//Exemple d'appel en JSON
+			function chartJS(sketchId) {
+					var pjs = Processing.getInstanceById(sketchId);
+					var dataJS = { "min" :0, "max": 100, "value":25 } ;
+					pjs.setData(dataJS);
+			}
+	</script>
+
+	</head>
+	<body>
+		<button type="button" onclick="chart$()">JQuery</button>
+
+		<button type="button" onclick="chart('sketch')">chart Me !</button>
+
+		<button type="button" onclick="chartJS('sketch')">chart JSON Me !</button>
+		<hr>
+		<canvas id="sketch" data-processing-sources="thermometer.pde"></canvas>  
+		<h1 id="selected">Mon beau toolTip</h1>
+
+		<div id = "monThermo"  /> 
+		
+	</body>
+</html>

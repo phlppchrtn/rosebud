@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+	<head>
+		<script src="knockout-2.1.0.js" type="text/javascript"></script>
+		<script src="processing.js" type="text/javascript"></script>
+		<script src="jquery-1.8.1.min.js"></script>
+		<script type="text/javascript">
+			var viewModel = {
+				happiness : ko.observable(80)
+			}
+				
+			function incValue(){
+				viewModel.happiness(getValue() + 1);
+			}
+			
+			function decValue(){
+				viewModel.happiness(getValue() -1);
+			}
+				
+			function getValue(){
+				return Number(viewModel.happiness());
+			}	
+				
+			$(document).ready(function() {
+ 				ko.applyBindings(viewModel); 
+			});
+		</script>
+	</head>
+	<body>
+ 		 <canvas id="truck" data-processing-sources="truck/truck.pde"></canvas>
+ 		 <canvas id="ruler" data-processing-sources="ruler/ruler.pde"></canvas>
+ 		 <canvas id="health" data-processing-sources="health/health.pde"></canvas>
+ 		 <canvas id="faces" data-processing-sources="faces/faces.pde"></canvas>
+ 		 <canvas id="cars" data-processing-sources="cars/cars.pde"></canvas>
+ 		 <canvas id="madMen" data-processing-sources="madMen/madMen.pde"></canvas>
+ 		 <canvas id="happiness" data-processing-sources="donut/donut.pde"></canvas>
+		 Souris + et - ; clavier changement de mode
+		 <br>
+		 <p>Happiness: <input data-bind='value: happiness' /></p> 
+		 <br>
+		 <input data-bind='value: happiness' type="range"  min="0" max="100" />
+	</body>
+</html>

@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+	<head>
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+		<script src="processing.js" type="text/javascript"></script>
+		<script type ="text/javascript">
+			function display(text){
+				$("#inner").prepend("<p>"+text+"</p>").hide().fadeIn();
+			}
+		</script>
+	</head>
+	<body>
+		<p style="background-color: #ffff00;  position: absolute;"> Une boîte jaune flottant</p>
+		<canvas style="background-color: #ffff00;" id="MonCanvas" data-processing-sources="rssreader.pde"></canvas>  
+		<div style="background-color: #eeeeff;" id="inner"></div>
+	</body>
+	
+</html>

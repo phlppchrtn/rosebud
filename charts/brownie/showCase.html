@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+	<head>
+		<script src="knockout-2.1.0.js" type="text/javascript"></script>
+		<script src="processing.js" type="text/javascript"></script>
+		<script src="jquery-1.8.1.min.js"></script>
+		<script type="text/javascript">
+			var viewModel = {
+				happiness : ko.observable(80)
+			}
+				
+			function incValue(){
+				viewModel.happiness(getValue() + 1);
+			}
+			
+			function decValue(){
+				viewModel.happiness(getValue() -1);
+			}
+				
+			function getValue(){
+				return Number(viewModel.happiness());
+			}	
+			
+			//On ajoute un filtre
+			function afterDraw (){
+			/*	//http://albertogasparin.it/articles/2011/05/html5-multiply-filter-canvas/
+				canvas = document.getElementById('brownie');
+				ctx = canvas.getContext('2d');
+				imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+				pix = imgData.data;
+				// Loop over each pixel and change the color.
+				for (var i = 0, n = pix.length; i < n; i += 4) {
+					pix[i  ] = multiply(multiplyColor[0], pix[i  ]); // red
+					pix[i+1] = multiply(multiplyColor[1], pix[i+1]); // green
+					pix[i+2] = multiply(multiplyColor[2], pix[i+2]); // blue
+					// pix[i+3] is alpha channel (ignored)
+				}
+				// Draw the result on the canvas
+				ctx.putImageData(imgData, 0, 0);*/
+			}	
+			multiplyColor = [255, 105, 0];
+			function multiply(topValue, bottomValue){
+				return topValue * bottomValue / 255;
+			}
+
+			$(document).ready(function() {
+ 				ko.applyBindings(viewModel); 
+			});
+			
+			
+		</script>
+	</head>
+	<body>
+ 		 <canvas id="brownie" data-processing-sources="brownie.pde"></canvas>
+		 Souris + et - ; clavier changement de mode
+		 <br>
+		 <p>Happiness: <input data-bind='value: happiness' /></p> 
+		 <br>
+		 <input data-bind='value: happiness' type="range"  min="0" max="100" />
+	</body>
+</html>
