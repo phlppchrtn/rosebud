@@ -3,7 +3,6 @@ float valeur2=70;
 float valeurMax=100;
 
 /* @pjs preload="bot1.svg"; */
-
 void setup() {
   size(500, 150);
   frameRate(30);
@@ -15,9 +14,8 @@ void setup() {
 void draw() {
   background( 255 );
 
-  PShape icone;
-  icone= loadShape("regle.svg");
-  shape(icone, 0, 0, 500, 150);
+  PShape icon= loadShape("regle.svg");
+  shape(icon, 0, 0, 500, 150);
   noStroke();
   fill(255);
   rectMode(CENTER);
