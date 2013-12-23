@@ -1,30 +1,41 @@
-/* @pjs preload="camion.svg"; */ 
+/* @pjs font="armalite_rifle.ttf"; */
+/* @pjs preload="truck.svg"; */
+
+PShape icon;
 
 void setup() {
-  size(500, 300);
-  frameRate(30);
+  size(500, 300); //480+2*10 & 280+2*10
+  icon = loadShape("truck.svg");
+  noLoop();
   smooth();
-  PFont segoe = createFont("segoeui.ttf", 120);
-  textFont(segoe, 120);
+  
+  PFont font = loadFont("armalite_rifle.ttf", 120);
+  textFont(font, 120);
   textAlign(CENTER, CENTER);
 }
+
 void draw() {
-  background( 255 );
-  PShape icon = loadShape("camion.svg");
+  translate (10, 10); // up and left margins
+  background(255);
+ 
+  //1. displays svg body 
   icon.disableStyle();
   noStroke();
-  fill(51, 181, 229);
-  shape(icon, 10, 10, 480, 280);
+  fill(51, 181, 229); //pretty blue
+  shape(icon, 0, 0, 480, 280);
 
   fill(255);
-  rect(0, 10, 500, 280-280*valeur/valeurMax);
+  rect(0, 0, 480, 280-280*getRate());
 
+  //2. displays svg skin 
   stroke(85);
   strokeWeight(2);
   noFill();
-  shape(icon, 10, 10, 480, 280);
+  shape(icon, 0, 0, 480, 280);
+
+  //3. displays the label in the center 
   noStroke();
   fill(85);
-  text((int)valeur, 250, 120);
+  text(getLabel(), 480/2, 280/2);
 }
 

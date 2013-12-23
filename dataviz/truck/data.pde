@@ -1,2 +1,7 @@
-float valeur=25;
-float valeurMax=100;
+float getRate(){
+  return 0.25;
+}
+
+String getLabel(){
+  return "25";
+}
