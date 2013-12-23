@@ -1,18 +1,20 @@
-/* @pjs preload="face.svg"; */ 
+/* @pjs preload="face.svg"; */
 
+PShape icon; 
 void setup() {
   size(250, 250);
-  frameRate(30);
-}
-void draw() {
+  noLoop(30);
+
+  icon = loadShape("face.svg");
+
   background( 255 );
-  PShape icon = loadShape("face.svg");
-  shape(icon, 0, 0,width, height);
- 
+}
+
+void draw() {
+  shape(icon, 0, 0, width, height);
+
   noStroke();
-  fill(51, 181, 229, 150);
+  fill(51, 181, 229, 150); //blue with opacity
   rect(0, 0, getRate()*width, height);
 }
-
-
 

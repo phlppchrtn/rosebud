@@ -1,18 +1,21 @@
 /* @pjs preload="dent.svg"; */
 
+PShape icon;
+
 void setup() {
   size(220, 300);
   frameRate(30);
   smooth();
+
+  icon = loadShape("dent.svg");
+  icon.disableStyle();
+
   PFont segoe = createFont("segoeui.ttf", 80);
   textFont(segoe, 80);
   textAlign(CENTER, CENTER);
 }
 void draw() {
   background( 255 );
-  PShape icon = loadShape("dent.svg");
-  
-  icon.disableStyle();
   noStroke();
   fill(getFillColor());
   shape(icon, 10, 10, 200, 280);
