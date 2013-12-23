@@ -1,32 +1,32 @@
-float a=55;
-float b=30;
-float valeur=50;
-float valeurMax=100;
+/* @pjs preload="man.svg"; */
 
-/* @pjs preload="man_gray.svg"; */
-/* @pjs preload="man_blue.svg"; */
+PShape icon;
 
 void setup() {
   size(400, 600);
+
+  icon = loadShape("man.svg");
+  icon.disableStyle();
+
   frameRate(30);
-  background( 255 );
-  stroke(0);
+  background(255);
+  noStroke();
 }
 
 void draw() {
-  PShape icon= loadShape("man_blue.svg");
+  float iconWidth = 0.05*width ; //20 men per line
+  float iconHeight = 0.05*width * icon.height/icon.width;
+
   float x=0;
   float y=0; 
-  for (int i = 1; i <= valeurMax; i = i+1) {
-    if (i==valeur+1) {
-      icon= loadShape("man_gray.svg");
-    }
-    if (x+b>width) {
-      y=y+a; 
+  for (int i = 0; i < 100; i++) {
+    fill(getColor(i+1));
+    shape(icon, x, y, 0.9*iconWidth, 0.9*iconHeight);
+    x = x + iconWidth; 
+    if (x > (width -iconWidth)) {
       x=0;
+      y=y+iconHeight; 
     }
-    shape(icon, x, y, 8*b/9, 8*a/9);
-    x=x+b;
   }
 }
 
