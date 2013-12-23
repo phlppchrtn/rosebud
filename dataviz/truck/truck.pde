@@ -5,25 +5,27 @@ PShape icon;
 
 void setup() {
   size(500, 300); //480+2*10 & 280+2*10
-  icon = loadShape("truck.svg");
   noLoop();
   smooth();
+  
+  icon = loadShape("truck.svg");
+  icon.disableStyle();
   
   PFont font = loadFont("armalite_rifle.ttf", 120);
   textFont(font, 120);
   textAlign(CENTER, CENTER);
+
+  translate (10, 10); // up and left margins
+  background(255);
 }
 
 void draw() {
-  translate (10, 10); // up and left margins
-  background(255);
- 
-  //1. displays svg body 
-  icon.disableStyle();
+   //1. displays all svg body with a nice blue
   noStroke();
-  fill(51, 181, 229); //pretty blue
+  fill(51, 181, 229); //nice blue
   shape(icon, 0, 0, 480, 280);
 
+ //3. clears proportionally to the rate
   fill(255);
   rect(0, 0, 480, 280-280*getRate());
 
