@@ -15,11 +15,11 @@ void setup() {
   textFont(font, 120);
   textAlign(CENTER, CENTER);
 
-  translate (10, 10); // up and left margins
   background(255);
 }
 
 void draw() {
+  translate (10, 10); // up and left margins
    //1. displays all svg body with a nice blue
   noStroke();
   fill(51, 181, 229); //nice blue
