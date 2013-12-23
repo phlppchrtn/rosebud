@@ -1,0 +1,17 @@
+<html>
+<head>
+	<script src="static/js//TweenMax.min.js"></script>
+</head>	
+	
+<body>
+	<img id="cat" src = "http://placekitten.com/200/300" />
+
+	<script type="text/javascript">
+		var obj = document.getElementById("cat") ;
+		var tl= new TimelineLite()
+			.to(obj, 1.5, {width:100})
+			.to(obj, 2, {x:500});
+	</script>
+
+</body>	
+</html>
