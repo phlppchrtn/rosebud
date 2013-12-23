@@ -16,7 +16,7 @@ void setup() {
   textAlign(CENTER, CENTER);
 }
 void draw() {
-  background(255);
+  background(255s);
   noStroke();
   fill(getFillColor());
   shape(icon, 10, 10, 200, 280);
@@ -33,5 +33,4 @@ void draw() {
   fill(getTextColor());
   text(getLabel(), 110, 100);
 }
-
 
