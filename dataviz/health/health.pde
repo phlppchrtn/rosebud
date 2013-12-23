@@ -1,4 +1,5 @@
-/* @pjs preload="dent.svg"; */
+/* @pjs font="armalite_rifle.ttf"; */
+/* @pjs preload="tooth.svg"; */
 
 PShape icon;
 
@@ -7,15 +8,15 @@ void setup() {
   frameRate(30);
   smooth();
 
-  icon = loadShape("dent.svg");
+  icon = loadShape("tooth.svg");
   icon.disableStyle();
 
-  PFont segoe = createFont("segoeui.ttf", 80);
+  PFont segoe = createFont("armalite_rifle.ttf", 80);
   textFont(segoe, 80);
   textAlign(CENTER, CENTER);
 }
 void draw() {
-  background( 255 );
+  background(255);
   noStroke();
   fill(getFillColor());
   shape(icon, 10, 10, 200, 280);
@@ -30,7 +31,7 @@ void draw() {
 
   noStroke();
   fill(getTextColor());
-  text((int)getValue(), 110, 100);
+  text(getLabel(), 110, 100);
 }
 
 

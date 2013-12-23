@@ -3,6 +3,9 @@ float valeurMax=100;
 float value = 50;
 float step = 1;
 
+text getLabel(){
+  return ""+value;
+}
 int getValue() {
   return value;
 }
