@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script type="text/javascript" src="http://mbostock.github.com/d3/d3.js"></script>
+</head>
+<body>
+    <div id="a" class="viz"></div>
+    <div id="b" class="viz"></div>
+    
+    <script type="text/javascript">
+    function mySample(target, width, height, data) {
+	    var sampleSVG = d3.selectAll(target)
+		    .append("svg")
+		    .attr("width", width)
+		    .attr("height", height);    
+    
+		var circleSVG = sampleSVG
+			.selectAll("circle").data(data)
+			.enter().append("circle")
+			    .style("stroke", "grey")
+			    .style("fill", "white")
+			    .attr("r", function(d) { return 40/d; })
+			    .attr("cx", function(d, i){ return 50 + 50*i})
+			    .attr("cy", 50)
+	 		    .on("mouseover", function(){d3.select(this).style("fill", "blue");})
+			    .on("mouseout", function(){d3.select(this).style("fill", "white");})
+			    .on("click", animate);
+
+		function animate() {
+		    d3.select(this).transition()
+		        .duration(1000)
+		        .attr("r", 10)
+		      .transition()
+		        .delay(1000)
+		        .attr("r", 40);
+		};
+	}
+
+
+	mySample ("#a", 500, 100, [2, 4, 1, 2, 4, 2, 1]);
+    </script>
+</body>
+</html>
