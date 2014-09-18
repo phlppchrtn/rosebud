@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script type="text/javascript" src="http://mbostock.github.com/d3/d3.js"></script>
+</head>
+<body>
+    <div id="a" class="viz"></div>
+
+    <script type="text/javascript">
+    function mySample(target, width, height, graph) {
+        var sampleSVG = d3.selectAll(target)
+            .append("svg")
+            .attr("width", width)
+            .attr("height", height);    
+        
+        graph.links.forEach(function(link) { 
+            link.source = graph.nodes[link.sourceId];
+            link.target = graph.nodes[link.targetId];
+            console.log (">>>"+ link.source.attr("cx"));
+        });
+
+       var circle = sampleSVG.selectAll("circle")
+            .data(graph.nodes);
+        
+        circle.enter().append("circle")
+            .style("fill", "purple")
+            .text(function(d) { return d.label; })
+ 
+        circle
+            .style("stroke-width", 5)
+            .style("stroke", function (d){ if (d.status==="ok") return "green"; else return "red";})
+            .attr("r", function(d) { return 40; })
+            .attr("cx", 50)
+            .attr("cx", 50)
+            .attr("cy", 50)
+            .transition()
+                .duration(1000)
+                .delay(100)    
+            .attr("cx",  function(d, i){ return 50 + 100*i;});
+    
+        circle.exit().remove();
+
+
+        var line = sampleSVG.selectAll("links")
+            .data(graph.links)
+            .enter().append("line")
+                .attr("x1", function(d){ return d3.select(d.source).attr("cx"); })
+                .attr("y1", function(d){ return  d.source.attr("cy"); })
+                .attr("x2", function(d){ return  d.target.attr("cx"); })
+                .attr("y2", function(d){ return  d.target.attr("cy"); })
+                .style("stroke", "rgb(6,120,155)");
+
+
+     }   
+
+    var graph = {
+        nodes :[
+            {label:"a"}, 
+            {label:"b"}, 
+            {label:"c", status:"ok"}
+        ],
+        links:[
+            {sourceId :0, targetId:1, status:"active"},
+            {sourceId :1, targetId:2, status:"active"}
+        ]
+    };
+
+    mySample ("#a", 500, 100, graph);
+    </script>
+</body>
+</html>
