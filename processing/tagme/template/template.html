@@ -1,7 +1,14 @@
 <!DOCTYPE html>
 	<head>
+	    <meta charset="utf-8">
+	    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	    <meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<title>@@sketch@@ : Built with Processing and Processing.js</title>
+	
+	    <!-- Bootstrap -->
+	    <link href="css/bootstrap.min.css" rel="stylesheet">
+
 		<link rel="icon"  type="image/x-icon" href="data:image/x-icon;base64,AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADAQAAVzABAEAjBQAaDwYAWjUGAGE6CQBrQQ0ATS8PAFhAJwBUQC8AbFI6AHVXPACBZk4A4NrWAPb19QAAAAAAAMmZmZmZmgAJIwAAAAAAcMIjPjA+PjAKpxIuMDMzMAm0Ii4zMzMACaIiLt3dMAAJtyIuIzPQAAm0Un5yM+IzKLRkfncy4iIotRF+dyLkIiq0QX53F+EiGrQUTkd34iIatEVu7u5iIVrBVVRBRFRVbAtGZGZla2uwAMu7u7u8vADAAwAAgAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIABAADAAwAA" />
 		<meta name="Generator" content="Processing" />
 		<!-- - - - - - - - - - - - - - - - - - - - - 
@@ -53,27 +60,37 @@
 		function addTag() {
 			var pjs = Processing.getInstanceById("@@id@@");
 			var text = document.getElementById('inputtext').value;
+			document.getElementById('inputtext').value = '';
 			pjs.addTag(text); 
 		}
 		</script>
 	</head>
 	<body>
-		<div id="content">
-			<div>
+		 <div class="jumbotron">
+      		<div class="container">
+				<div class="navbar-collapse collapse">
+    	    		<form class="navbar-form navbar-left" role="form">
+						<input type="file" class="btn btn-success" />
+	        		</form>
+				</div>
+
 				<canvas id="@@id@@" data-processing-sources="@@sketch@@.pde" 
 						width="@@width@@" height="@@height@@">
 					<p>Your browser does not support the canvas tag.</p>
 					<!-- Note: you can put any alternative content here. -->
 				</canvas>
-				<input type="textfield" value="my text" id="inputtext">
-				<button type="button" onclick="addTag()">place</button>
-				<noscript>
-					<p>JavaScript is required to view the contents of this page.</p>
-				</noscript>
+
+				<div class="navbar-collapse collapse">
+          			<form class="navbar-form navbar-left" role="form">
+           				<input type="text" placeholder="tag" class="form-control" id="inputtext">
+	        			<button type="button" onclick="addTag()"  class="btn btn-success"><span class="glyphicon glyphicon-plus-sign"></span>  create tag</button>
+          			</form>
+        		</div><!--/.navbar-collapse -->
 	    	</div>
-			<h1>@@sketch@@</h1>
-    		<p id="description">@@description@@</p>
-			<p id="sources">Source code: @@source@@</p>
 		</div>
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
 	</body>
 </html>

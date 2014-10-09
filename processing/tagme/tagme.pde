@@ -21,14 +21,26 @@ void draw() {
   text(current, mouseX, mouseY); 
   
   fill(#00CCFF);
-  rect(mouseX, mouseY, 10, 10);
-    
+  boolean found = false;    
   for (int i= 0; i< tags.size(); i++) {
     Tag tag = tags.get(i);
-    fill(#FFCC00);
-    rect(tag.x, tag.y, 10, 10);
+    if (mouseX>tag.x-10 && mouseX<tag.x+10 && mouseY>tag.y-10 && mouseY<tag.y+10){
+      stroke(#FF0000);
+      found = true;
+    }else{
+      stroke(#FFCC00);
+    }
+    noFill();
+    strokeWeight(5);
+    ellipse(tag.x-5, tag.y-5, 20, 20);
     text(tag.label, tag.x, tag.y); 
-  } 
+  }
+   if (!found){
+      noFill();
+      strokeWeight(5);
+      stroke(#00CCFF);
+      ellipse(mouseX-5, mouseY-5, 20, 20);
+    } 
 }
   
 void mouseClicked() {
