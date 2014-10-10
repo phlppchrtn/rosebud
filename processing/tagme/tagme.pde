@@ -6,9 +6,12 @@ Tag currentTag;
 color defaultColor = #A0522D;
 
 void setup() {
-  //taille de la zone de dessin
-  photo = loadImage("http://inapcache.boston.com/universal/site_graphics/blogs/bigpicture/Naturalworld_092614/bp18.jpg");
-  size(500, 500);
+  cursor(CROSS);
+  photo = loadImage("Coronation_of_Napoleon.jpg");
+//  photo.loadPixels();
+  size(300, 300);
+//size($(document).width(), $(document).height());
+
   strokeCap(ROUND);
   strokeJoin(ROUND);
 }
@@ -31,14 +34,13 @@ void saveTag(String label){
 }
 
 void draw() {
-  //photo.resize(500, 0);
-  image(photo, 0, 0, 500, 500);
+  image(photo, 0, 0,500, 500);
+//  background(photo);
   
  // fill(#00CCFF);
   //textSize(32);
   //text(current, mouseX, mouseY); 
   
-  fill(#00CCFF);
 //  boolean found = false;    
   for (int i= 0; i< tags.size(); i++) {
     Tag tag = tags.get(i);
@@ -52,19 +54,21 @@ void draw() {
   }
   
   if (choosen){
-    //on est en train de rensigner les tags
+    //on est en train de renseigner les tags
      if (mousePressed){
        drawTag(currentTag, mouseX, mouseY, true);
      }else{
        drawTag(currentTag, currentTag.x, currentTag.y, true);
      } 
   }else {
+      //Il n'y a pas de point choisi, on affiche le curseur
       noFill();
       strokeWeight(2);
       stroke(#00CCFF);
       ellipse(mouseX-5, mouseY-5, 20, 20);
     } 
 }
+
 void drawTag (Tag tag, int x, int y, boolean selected){
    noFill();
    strokeWeight(2);
@@ -78,8 +82,9 @@ void drawTag (Tag tag, int x, int y, boolean selected){
    }
 }  
 
-
 void mouseClicked() {
+    cursor(MOVE);
+
   choosen = true;
 
   currentTag = new Tag();

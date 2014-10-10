@@ -10,8 +10,6 @@
 	    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
 		<link rel="stylesheet" type="text/css" href="bootstrap-colorselector-0.2.0/css/bootstrap-colorselector.css" />
  
-		<link rel="icon"  type="image/x-icon" href="data:image/x-icon;base64,AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADAQAAVzABAEAjBQAaDwYAWjUGAGE6CQBrQQ0ATS8PAFhAJwBUQC8AbFI6AHVXPACBZk4A4NrWAPb19QAAAAAAAMmZmZmZmgAJIwAAAAAAcMIjPjA+PjAKpxIuMDMzMAm0Ii4zMzMACaIiLt3dMAAJtyIuIzPQAAm0Un5yM+IzKLRkfncy4iIotRF+dyLkIiq0QX53F+EiGrQUTkd34iIatEVu7u5iIVrBVVRBRFRVbAtGZGZla2uwAMu7u7u8vADAAwAAgAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIABAADAAwAA" />
-		
 		<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
 
 		<meta name="Generator" content="Processing" />
@@ -31,8 +29,6 @@
 			
 			canvas { 
 				display: block; 
-				outline: 0px; 
-				margin-bottom: 1.5em; 
 			}
 			#content { 
 				margin: 50px auto 0px auto; padding: 25px 25px 15px 25px;
@@ -63,9 +59,9 @@
 			var pjs = Processing.getInstanceById("@@id@@");
 			var tagLabel = document.getElementById('inputTag').value;
 
-			var svg = document.getElementById('#svg').
+			//var svg = document.getElementById('#svg').
 
-			var NS="http://www.w3.org/2000/svg";
+/*			var NS="http://www.w3.org/2000/svg";
 			var SVGObj= document.createElementNS(NS,"rect");
 			SVGObj.width.baseVal.value=w;
  			SVGObj.height.baseVal.value=h;
@@ -75,15 +71,14 @@
 
 			var NS="http://www.w3.org/2000/svg";
 			var SVGObj=document.createElementNS(NS,"rect");
-
+*/
 			pjs.saveTag(tagLabel); 
 		    $("#panel").fadeOut();
 		}
 		function displayTag(x, y){
-			document.getElementById('tooltip').style.left = x+"px";
-			document.getElementById('tooltip').style.top = y+"px";
-
-			$('#tooltip').tooltip({title:'tytytytytyty'}).tooltip('show');
+//			document.getElementById('tooltip').style.left = x+"px";
+//			document.getElementById('tooltip').style.top = y+"px";
+//			$('#tooltip').tooltip({title:'tytytytytyty'}).tooltip('show');
 			
 			//$("#panel").show( "slide", {direction: "right" }, 700 );
 			$("#panel").fadeIn();
@@ -100,10 +95,10 @@
 				</div-->
 
 				<div class="row">
-		           	<div class="col-md-8">
-		           		<div id="tooltip" style="float:left; background-color: #ffff00; position: absolute; left: 200px; top: 200px;"><span class="glyphicon glyphicon-search"></span></div>	
-						<SVG id="#svg" style="float:left; position: absolute; left: 0px; top: 200px;" width="@@width@@" height="@@height@@"></SVG>
-						<canvas id="@@id@@" data-processing-sources="@@sketch@@.pde" width="@@width@@" height="@@height@@">
+		           	<div class="col-md-8" style="background-color:#F00;">
+		           		<!--div id="tooltip" style="float:left; background-color: #ffff00; position: absolute; left: 200px; top: 200px;"><span class="glyphicon glyphicon-search"></span></div-->	
+						<!--SVG id="#svg" style="float:left; position: absolute; left: 0px; top: 200px;" width="@@width@@" height="@@height@@"></SVG-->
+						<canvas id="@@id@@" data-processing-sources="@@sketch@@.pde">
 							<p>Your browser does not support the canvas tag.</p>
 							<!-- Note: you can put any alternative content here. -->
 						</canvas>
@@ -128,9 +123,9 @@
 									    <option value="C71585" data-color="#C71585">mediumvioletred</option>
 									</select>
 	 							</div>
+
 			        			<button type="button" onclick="saveTag()"  	class="btn btn-success"><span class="glyphicon glyphicon-plus-sign"></span>save tag</button>
 			        			<button type="button" onclick="removeTag()" class="btn btn-danger"><i class="fa fa-trash"></i></button>
-
 
 		          			</form>
 		        		</div><!--/.navbar-collapse -->
@@ -141,6 +136,10 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 	<script src="bootstrap-colorselector-0.2.0/js/bootstrap-colorselector.js"></script>
 	<script>
+		var pjs = Processing.getInstanceById("@@id@@");
+
+		//canvas.size($(document).width(), $(document).height());
+	
 		$('#colorselector').colorselector({
           callback: function (value, color, title) {
 			var pjs = Processing.getInstanceById("@@id@@");
