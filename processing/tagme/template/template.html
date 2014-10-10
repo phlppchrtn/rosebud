@@ -7,18 +7,11 @@
 		<title>@@sketch@@ : Built with Processing and Processing.js</title>
 	
 	    <!-- Bootstrap -->
-	    <link href="css/bootstrap.min.css" rel="stylesheet">
-
+	    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+		<link rel="stylesheet" type="text/css" href="bootstrap-colorselector-0.2.0/css/bootstrap-colorselector.css" />
+ 
 		<link rel="icon"  type="image/x-icon" href="data:image/x-icon;base64,AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADAQAAVzABAEAjBQAaDwYAWjUGAGE6CQBrQQ0ATS8PAFhAJwBUQC8AbFI6AHVXPACBZk4A4NrWAPb19QAAAAAAAMmZmZmZmgAJIwAAAAAAcMIjPjA+PjAKpxIuMDMzMAm0Ii4zMzMACaIiLt3dMAAJtyIuIzPQAAm0Un5yM+IzKLRkfncy4iIotRF+dyLkIiq0QX53F+EiGrQUTkd34iIatEVu7u5iIVrBVVRBRFRVbAtGZGZla2uwAMu7u7u8vADAAwAAgAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIABAADAAwAA" />
 		<meta name="Generator" content="Processing" />
-		<!-- - - - - - - - - - - - - - - - - - - - - 
-		+
-		+    Wondering how this works? 
-		+
-		+    Go to: http://processing.org/
-		+    and: http://processingjs.org/
-		+
-		+ - - - - - - - - - - - - - - - - - - - - -->
 		<style type="text/css">
 	body {
 	  background-color: #333; color: #bbb; line-height: normal;
@@ -59,8 +52,8 @@
 		<script type="text/javascript">
 		function addTag() {
 			var pjs = Processing.getInstanceById("@@id@@");
-			var text = document.getElementById('inputtext').value;
-			document.getElementById('inputtext').value = '';
+			var text = document.getElementById('inputTag').value;
+			document.getElementById('inputTag').value = '';
 			pjs.addTag(text); 
 		}
 		</script>
@@ -68,29 +61,52 @@
 	<body>
 		 <div class="jumbotron">
       		<div class="container">
-				<div class="navbar-collapse collapse">
+				<!--div class="navbar-collapse collapse">
     	    		<form class="navbar-form navbar-left" role="form">
 						<input type="file" class="btn btn-success" />
 	        		</form>
-				</div>
+				</div-->
 
-				<canvas id="@@id@@" data-processing-sources="@@sketch@@.pde" 
-						width="@@width@@" height="@@height@@">
-					<p>Your browser does not support the canvas tag.</p>
-					<!-- Note: you can put any alternative content here. -->
-				</canvas>
-
-				<div class="navbar-collapse collapse">
-          			<form class="navbar-form navbar-left" role="form">
-           				<input type="text" placeholder="tag" class="form-control" id="inputtext">
-	        			<button type="button" onclick="addTag()"  class="btn btn-success"><span class="glyphicon glyphicon-plus-sign"></span>  create tag</button>
-          			</form>
-        		</div><!--/.navbar-collapse -->
-	    	</div>
+				<div class="row">
+		           	<div class="col-md-8">
+						<canvas id="@@id@@" data-processing-sources="@@sketch@@.pde" 
+							width="@@width@@" height="@@height@@">
+							<p>Your browser does not support the canvas tag.</p>
+							<!-- Note: you can put any alternative content here. -->
+						</canvas>
+					</div>
+		           	<div class="col-md-4" style="background-color:#333;">
+						<div class="navbar-collapse collapse">
+		          			<form>
+ 								<div class="form-group">
+ 		          					<label for="inputTag">Label</label>
+		           					<input type="text" placeholder="tag" class="form-control" id="inputTag">
+		           				</div>	
+ 								<div class="form-group">
+			           				<label for="icolorselector">Color</label>
+			           				<select id="colorselector">
+									    <option value="106" data-color="#A0522D">sienna</option>
+									    <option value="47" data-color="#CD5C5C" selected="selected">indianred</option>
+									    <option value="87" data-color="#FF4500">orangered</option>
+									    ...
+									    <option value="15" data-color="#DC143C">crimson</option>
+									    <option value="24" data-color="#FF8C00">darkorange</option>
+									    <option value="78" data-color="#C71585">mediumvioletred</option>
+									</select>
+	 							</div>
+			        			<button type="button" onclick="addTag()"  class="btn btn-success"><span class="glyphicon glyphicon-plus-sign"></span>  create tag</button>
+		          			</form>
+		        		</div><!--/.navbar-collapse -->
+		        	</div>	
+		    	</div>
+			</div>
 		</div>
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+	<script src="bootstrap-colorselector-0.2.0/js/bootstrap-colorselector.js"></script>
+	<script>
+		$('#colorselector').colorselector();
+	</script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="js/bootstrap.min.js"></script>
+    <script src="bootstrap/js/bootstrap.min.js"></script>
 	</body>
 </html>
