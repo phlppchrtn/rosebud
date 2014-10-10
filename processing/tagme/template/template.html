@@ -62,6 +62,20 @@
 		function saveTag() {
 			var pjs = Processing.getInstanceById("@@id@@");
 			var tagLabel = document.getElementById('inputTag').value;
+
+			var svg = document.getElementById('#svg').
+
+			var NS="http://www.w3.org/2000/svg";
+			var SVGObj= document.createElementNS(NS,"rect");
+			SVGObj.width.baseVal.value=w;
+ 			SVGObj.height.baseVal.value=h;
+ 			SVGObj.setAttribute("height",h);
+ 			SVGObj.style.fill=fill;
+ 			svg.appendChild(SVGObj);
+
+			var NS="http://www.w3.org/2000/svg";
+			var SVGObj=document.createElementNS(NS,"rect");
+
 			pjs.saveTag(tagLabel); 
 		    $("#panel").fadeOut();
 		}
@@ -88,8 +102,8 @@
 				<div class="row">
 		           	<div class="col-md-8">
 		           		<div id="tooltip" style="float:left; background-color: #ffff00; position: absolute; left: 200px; top: 200px;"><span class="glyphicon glyphicon-search"></span></div>	
-						<canvas id="@@id@@" data-processing-sources="@@sketch@@.pde" 
-							width="@@width@@" height="@@height@@">
+						<SVG id="#svg" style="float:left; position: absolute; left: 0px; top: 200px;" width="@@width@@" height="@@height@@"></SVG>
+						<canvas id="@@id@@" data-processing-sources="@@sketch@@.pde" width="@@width@@" height="@@height@@">
 							<p>Your browser does not support the canvas tag.</p>
 							<!-- Note: you can put any alternative content here. -->
 						</canvas>
