@@ -42,6 +42,11 @@
 		border-right: 1px solid #333; border-bottom: 1px solid #333;
 		background-color: #3d3d3d;
 	}
+
+	#panel {
+		padding:50px;
+		display:none;
+	}
 		</style>
 		<!--[if lt IE 9]>
 			<script type="text/javascript">alert("Your browser does not support the canvas tag.");</script>
@@ -52,9 +57,13 @@
 		<script type="text/javascript">
 		function addTag() {
 			var pjs = Processing.getInstanceById("@@id@@");
-			var text = document.getElementById('inputTag').value;
-			document.getElementById('inputTag').value = '';
-			pjs.addTag(text); 
+			var tagLabel = document.getElementById('inputTag').value;
+			pjs.addInfo(tagLabel); 
+		    $("#panel").fadeOut();
+		}
+		function displayTag(){
+			//$("#panel").show( "slide", {direction: "right" }, 700 );
+			$("#panel").fadeIn();
 		}
 		</script>
 	</head>
@@ -75,23 +84,24 @@
 							<!-- Note: you can put any alternative content here. -->
 						</canvas>
 					</div>
-		           	<div class="col-md-4" style="background-color:#333;">
+		           	<div class="col-md-4" style="background-color:#333;" id="panel">
 						<div class="navbar-collapse collapse">
-		          			<form>
+		          			<form >
  								<div class="form-group">
  		          					<label for="inputTag">Label</label>
 		           					<input type="text" placeholder="tag" class="form-control" id="inputTag">
 		           				</div>	
  								<div class="form-group">
-			           				<label for="icolorselector">Color</label>
-			           				<select id="colorselector">
-									    <option value="106" data-color="#A0522D">sienna</option>
-									    <option value="47" data-color="#CD5C5C" selected="selected">indianred</option>
-									    <option value="87" data-color="#FF4500">orangered</option>
+ 									<!--http://bootstrap-colorselector.flaute.com/-->
+			           				<label for="colorselector">Color</label>
+			           				<select id="colorselector" >
+									    <option value="A0522D" data-color="#A0522D" selected="selected">sienna</option>
+									    <option value="CD5C5C" data-color="#CD5C5C">indianred</option>
+									    <option value="FF4500" data-color="#FF4500">orangered</option>
 									    ...
-									    <option value="15" data-color="#DC143C">crimson</option>
-									    <option value="24" data-color="#FF8C00">darkorange</option>
-									    <option value="78" data-color="#C71585">mediumvioletred</option>
+									    <option value="DC143C" data-color="#DC143C">crimson</option>
+									    <option value="FF8C00" data-color="#FF8C00">darkorange</option>
+									    <option value="C71585" data-color="#C71585">mediumvioletred</option>
 									</select>
 	 							</div>
 			        			<button type="button" onclick="addTag()"  class="btn btn-success"><span class="glyphicon glyphicon-plus-sign"></span>  create tag</button>
@@ -104,7 +114,12 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 	<script src="bootstrap-colorselector-0.2.0/js/bootstrap-colorselector.js"></script>
 	<script>
-		$('#colorselector').colorselector();
+		$('#colorselector').colorselector({
+          callback: function (value, color, title) {
+			var pjs = Processing.getInstanceById("@@id@@");
+			pjs.updateColor(value); 
+          }
+    });
 	</script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="bootstrap/js/bootstrap.min.js"></script>
