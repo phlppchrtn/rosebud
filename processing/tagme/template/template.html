@@ -136,10 +136,6 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 	<script src="bootstrap-colorselector-0.2.0/js/bootstrap-colorselector.js"></script>
 	<script>
-		var pjs = Processing.getInstanceById("@@id@@");
-
-		//canvas.size($(document).width(), $(document).height());
-	
 		$('#colorselector').colorselector({
           callback: function (value, color, title) {
 			var pjs = Processing.getInstanceById("@@id@@");

@@ -9,7 +9,7 @@ void setup() {
   cursor(CROSS);
   photo = loadImage("Coronation_of_Napoleon.jpg");
 //  photo.loadPixels();
-  size(300, 300);
+  size(500, 500);
 //size($(document).width(), $(document).height());
 
   strokeCap(ROUND);
@@ -31,35 +31,24 @@ void saveTag(String label){
   currentTag.label = label;
   tags.add(currentTag);
   choosen = false;
+  cursor(CROSS);
 }
 
 void draw() {
   image(photo, 0, 0,500, 500);
-//  background(photo);
   
- // fill(#00CCFF);
-  //textSize(32);
-  //text(current, mouseX, mouseY); 
-  
-//  boolean found = false;    
   for (int i= 0; i< tags.size(); i++) {
     Tag tag = tags.get(i);
-//    if (! choosen && mouseX>tag.x-10 && mouseX<tag.x+10 && mouseY>tag.y-10 && mouseY<tag.y+10){
- //     stroke(#FF0000);
-//      found = true;
- //   }else{
-  //    stroke(#FFCC00);
-  //  }
-    drawTag(tag, tag.x, tag.y, false);
+    drawTag(tag, false);
   }
   
   if (choosen){
     //on est en train de renseigner les tags
-     if (mousePressed){
-       drawTag(currentTag, mouseX, mouseY, true);
-     }else{
-       drawTag(currentTag, currentTag.x, currentTag.y, true);
-     } 
+     if (move){
+       currentTag.x = mouseX;
+       currentTag.y = mouseY;
+     }
+     drawTag(currentTag, true);
   }else {
       //Il n'y a pas de point choisi, on affiche le curseur
       noFill();
@@ -69,31 +58,48 @@ void draw() {
     } 
 }
 
-void drawTag (Tag tag, int x, int y, boolean selected){
+void drawTag (Tag tag, boolean selected){
    noFill();
    strokeWeight(2);
    stroke(tag.c);
-   ellipse(x, y, 20, 20);
-   text(tag.label, x, y); 
+   ellipse(tag.x, tag.y, 20, 20);
+   text(tag.label, tag.x, tag.y); 
    if (selected){
       strokeWeight(1); 
       stroke(#CCCCCC); 
-      rect(x-15, y-15,  30, 30);
+      rect(tag.x-15, tag.y-15,  30, 30);
    }
 }  
 
+boolean move =false;
+
+void mouseReleased() {
+    cursor(ARROW);
+    if (move){
+      currentTag.x = mouseX;
+      currentTag.y = mouseY;
+      move= false;
+    } 
+}  
 void mouseClicked() {
-    cursor(MOVE);
-
-  choosen = true;
-
-  currentTag = new Tag();
-  currentTag.x = mouseX;
-  currentTag.y = mouseY;
-  currentTag.label= "";
-  currentTag.c = defaultColor; 
+  if (choosen){
+   if (abs(currentTag.x-mouseX)<20 && abs(currentTag.y-mouseY)<20){
+     //on est sur le tag couant, on le bouge 
+     cursor(HAND);
+      move= true;
+    }
+  }else{
+    choosen = true;
   
-  displayTag(mouseX, mouseY);    
+    currentTag = new Tag();
+    currentTag.x = mouseX;
+    currentTag.y = mouseY;
+    currentTag.label= "";
+    currentTag.c = defaultColor; 
+    
+    displayTag(mouseX, mouseY);    
+  }
+
 }
 
 
