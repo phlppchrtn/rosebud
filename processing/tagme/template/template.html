@@ -11,42 +11,41 @@
 		<link rel="stylesheet" type="text/css" href="bootstrap-colorselector-0.2.0/css/bootstrap-colorselector.css" />
  
 		<link rel="icon"  type="image/x-icon" href="data:image/x-icon;base64,AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADAQAAVzABAEAjBQAaDwYAWjUGAGE6CQBrQQ0ATS8PAFhAJwBUQC8AbFI6AHVXPACBZk4A4NrWAPb19QAAAAAAAMmZmZmZmgAJIwAAAAAAcMIjPjA+PjAKpxIuMDMzMAm0Ii4zMzMACaIiLt3dMAAJtyIuIzPQAAm0Un5yM+IzKLRkfncy4iIotRF+dyLkIiq0QX53F+EiGrQUTkd34iIatEVu7u5iIVrBVVRBRFRVbAtGZGZla2uwAMu7u7u8vADAAwAAgAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIABAADAAwAA" />
+		
+		<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
 		<meta name="Generator" content="Processing" />
 		<style type="text/css">
-	body {
-	  background-color: #333; color: #bbb; line-height: normal;
-	  font-family: Lucida Grande, Lucida Sans, Arial, Helvetica Neue, Verdana, Geneva, sans-serif;
-	  font-size: 11px; font-weight: normal; text-decoration: none;
-		  line-height: 1.5em;
-	}
-	a img { 
-		border: 0px solid transparent;
-	}
-	a, a:link, a:visited, a:active, a:hover { 
-		color: #cdcdcd; text-decoration: underline;
-	}
-	h1 {
-	    font-family: Arial, Helvetica Neue, Verdana, Geneva, sans-serif;
-		width: 100%; letter-spacing: 0.1em;
-		margin-bottom: 1em; font-size: 1.65em;
-	}
-	canvas { 
-		display: block; 
-		outline: 0px; 
-		margin-bottom: 1.5em; 
-	}
-	#content { 
-		margin: 50px auto 0px auto; padding: 25px 25px 15px 25px;
-		width: @@width@@px; min-width: 300px; overflow: auto;
-		border-left: 1px solid #444; border-top: 1px solid #444; 
-		border-right: 1px solid #333; border-bottom: 1px solid #333;
-		background-color: #3d3d3d;
-	}
+			body {
+			  background-color: #333; color: #bbb; line-height: normal;
+			  font-family: Lucida Grande, Lucida Sans, Arial, Helvetica Neue, Verdana, Geneva, sans-serif;
+			  font-size: 11px; font-weight: normal; text-decoration: none;
+				  line-height: 1.5em;
+			}
+			a img { 
+				border: 0px solid transparent;
+			}
+			a, a:link, a:visited, a:active, a:hover { 
+				color: #cdcdcd; text-decoration: underline;
+			}
+			
+			canvas { 
+				display: block; 
+				outline: 0px; 
+				margin-bottom: 1.5em; 
+			}
+			#content { 
+				margin: 50px auto 0px auto; padding: 25px 25px 15px 25px;
+				width: @@width@@px; min-width: 300px; overflow: auto;
+				border-left: 1px solid #444; border-top: 1px solid #444; 
+				border-right: 1px solid #333; border-bottom: 1px solid #333;
+				background-color: #3d3d3d;
+			}
 
-	#panel {
-		padding:50px;
-		display:none;
-	}
+			#panel {
+				padding:50px;
+				display:none;
+			}
 		</style>
 		<!--[if lt IE 9]>
 			<script type="text/javascript">alert("Your browser does not support the canvas tag.");</script>
@@ -55,13 +54,23 @@
 		@@scripts@@
 
 		<script type="text/javascript">
-		function addTag() {
+		function removeTag() {
 			var pjs = Processing.getInstanceById("@@id@@");
-			var tagLabel = document.getElementById('inputTag').value;
-			pjs.addInfo(tagLabel); 
+			pjs.removeTag(); 
 		    $("#panel").fadeOut();
 		}
-		function displayTag(){
+		function saveTag() {
+			var pjs = Processing.getInstanceById("@@id@@");
+			var tagLabel = document.getElementById('inputTag').value;
+			pjs.saveTag(tagLabel); 
+		    $("#panel").fadeOut();
+		}
+		function displayTag(x, y){
+			document.getElementById('tooltip').style.left = x+"px";
+			document.getElementById('tooltip').style.top = y+"px";
+
+			$('#tooltip').tooltip({title:'tytytytytyty'}).tooltip('show');
+			
 			//$("#panel").show( "slide", {direction: "right" }, 700 );
 			$("#panel").fadeIn();
 		}
@@ -78,6 +87,7 @@
 
 				<div class="row">
 		           	<div class="col-md-8">
+		           		<div id="tooltip" style="float:left; background-color: #ffff00; position: absolute; left: 200px; top: 200px;"><span class="glyphicon glyphicon-search"></span></div>	
 						<canvas id="@@id@@" data-processing-sources="@@sketch@@.pde" 
 							width="@@width@@" height="@@height@@">
 							<p>Your browser does not support the canvas tag.</p>
@@ -104,7 +114,10 @@
 									    <option value="C71585" data-color="#C71585">mediumvioletred</option>
 									</select>
 	 							</div>
-			        			<button type="button" onclick="addTag()"  class="btn btn-success"><span class="glyphicon glyphicon-plus-sign"></span>  create tag</button>
+			        			<button type="button" onclick="saveTag()"  	class="btn btn-success"><span class="glyphicon glyphicon-plus-sign"></span>save tag</button>
+			        			<button type="button" onclick="removeTag()" class="btn btn-danger"><i class="fa fa-trash"></i></button>
+
+
 		          			</form>
 		        		</div><!--/.navbar-collapse -->
 		        	</div>	

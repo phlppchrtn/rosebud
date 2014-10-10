@@ -3,22 +3,28 @@ PImage photo;
 ArrayList<Tag> tags = new ArrayList();
 boolean choosen = false;
 Tag currentTag;
+color defaultColor = #A0522D;
 
 void setup() {
   //taille de la zone de dessin
   photo = loadImage("http://inapcache.boston.com/universal/site_graphics/blogs/bigpicture/Naturalworld_092614/bp18.jpg");
   size(500, 500);
+  strokeCap(ROUND);
+  strokeJoin(ROUND);
 }
 
 void updateColor(String c){
-  alert(currentTag.c);
-  int hi = unhex(c);
-  currentTag.c = color(hi);
-  alert(currentTag.c);
+  int h = unhex("FF"+c);
+  defaultColor = color(h);
+  currentTag.c =defaultColor;
 }
 
 
-void addInfo(String label){
+void removeTag(){
+  choosen = false;
+}
+
+void saveTag(String label){
   currentTag.label = label;
   tags.add(currentTag);
   choosen = false;
@@ -42,12 +48,16 @@ void draw() {
  //   }else{
   //    stroke(#FFCC00);
   //  }
-    drawTag(tag);
+    drawTag(tag, tag.x, tag.y, false);
   }
   
   if (choosen){
     //on est en train de rensigner les tags
-     drawTag(currentTag);
+     if (mousePressed){
+       drawTag(currentTag, mouseX, mouseY, true);
+     }else{
+       drawTag(currentTag, currentTag.x, currentTag.y, true);
+     } 
   }else {
       noFill();
       strokeWeight(2);
@@ -55,14 +65,19 @@ void draw() {
       ellipse(mouseX-5, mouseY-5, 20, 20);
     } 
 }
-
-void drawTag (Tag tag){
+void drawTag (Tag tag, int x, int y, boolean selected){
    noFill();
    strokeWeight(2);
    stroke(tag.c);
-   ellipse(tag.x-5, tag.y-5, 20, 20);
-   text(tag.label, tag.x, tag.y); 
+   ellipse(x, y, 20, 20);
+   text(tag.label, x, y); 
+   if (selected){
+      strokeWeight(1); 
+      stroke(#CCCCCC); 
+      rect(x-15, y-15,  30, 30);
+   }
 }  
+
 
 void mouseClicked() {
   choosen = true;
@@ -71,8 +86,9 @@ void mouseClicked() {
   currentTag.x = mouseX;
   currentTag.y = mouseY;
   currentTag.label= "";
-  currentTag.c = #A0522D; 
-  displayTag();    
+  currentTag.c = defaultColor; 
+  
+  displayTag(mouseX, mouseY);    
 }
 
 
