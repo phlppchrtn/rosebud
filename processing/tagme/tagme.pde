@@ -45,12 +45,14 @@ void draw() {
   if (choosen){
     //on est en train de renseigner les tags
      if (move){
+        cursor(HAND);
        currentTag.x = mouseX;
        currentTag.y = mouseY;
      }
      drawTag(currentTag, true);
   }else {
       //Il n'y a pas de point choisi, on affiche le curseur
+      cursor(CROSS);
       noFill();
       strokeWeight(2);
       stroke(#00CCFF);
@@ -74,12 +76,12 @@ void drawTag (Tag tag, boolean selected){
 boolean move =false;
 
 void mouseReleased() {
-    cursor(ARROW);
-    if (move){
-      currentTag.x = mouseX;
-      currentTag.y = mouseY;
-      move= false;
-    } 
+   // cursor(ARROW);
+   // if (move){
+    //  currentTag.x = mouseX;
+    //  currentTag.y = mouseY;
+    //  move= false;
+    //} 
 }  
 void mouseClicked() {
   if (choosen){
