@@ -2,7 +2,7 @@ var myApp = angular.module('myApp', [])
 	.controller('HelloCtrl', ['$scope', function ($scope) {
 		$scope.name = 'World';
 		$scope.firstname = 'roger';
-		$scope.movie = {"title":"shinning", "author":"kubrick"};
+		$scope.movie = {"title":"shinning", "author":"kubrick", dt:"DT_MOVIE"};
 		$scope.users = [
 			{"first":"jean", "last":"dupond", dt:"DT_USER"}, 
 			{"first":"paul", "last":"rapon", dt:"DT_USER"}
@@ -26,6 +26,9 @@ myApp
     		},
 		    restrict: 'EA',
 		    replace: true,
-		    template: '<div>{{dto.first}} -- {{dto.last}}</div>'
+		    //template: '<div>{{dto.dt == "DT_USER"}}</div>'
+		    template: '<div><div ng-if="dto.dt ==\'DT_USER\'">{{dto.first}} -{{dto.last}}</div>'
+		    +'<div ng-if="dto.dt ==\'DT_MOVIE\'">{{dto.title}} made by >> {{dto.author}}</div>'
+		    +'</div>'
 		  };
 	});
