@@ -27,8 +27,9 @@ myApp
 		    restrict: 'EA',
 		    replace: true,
 		    //template: '<div>{{dto.dt == "DT_USER"}}</div>'
-		    template: '<div><div ng-if="dto.dt ==\'DT_USER\'">{{dto.first}} -{{dto.last}}</div>'
-		    +'<div ng-if="dto.dt ==\'DT_MOVIE\'">{{dto.title}} made by >> {{dto.author}}</div>'
+		    template: '<div ng-switch on="dto.dt">'
+		    +'<div ng-switch-when="DT_USER">{{dto.first}} -{{dto.last}}</div>'
+		    +'<div ng-switch-when="DT_MOVIE">{{dto.title}} made by >> {{dto.author}}</div>'
 		    +'</div>'
 		  };
 	});
