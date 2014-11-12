@@ -1,18 +1,29 @@
 <!doctype html>
-<html>
+<html ng-app="myApp">
   <head>
     <script src="http://code.angularjs.org/1.2.7/angular.min.js"></script>
     <script src="controller.js"></script>
   </head>
   <body>
-    <div ng-app="myApp">
-      <div ng-controller="HelloCtrl">
-        Your name: <input type="text" ng-model="name"/>
-        <hr/>
-        Hello {{name || "World"}}!
+    <div ng-controller="HelloCtrl">
+      Your name: <input type="text" ng-model="name"/>
+      <hr/>
+      Hello {{name || "World"}}!
+     <br/> 
+     <h1>ng-repeat classic</h1>
+     <ul>
+      <li ng-repeat="user in users">
+           {{user.first}} -- {{user.last}} --{{name}}
+      </li>
+       </ul>
+     <h1>ng-repeat with inner directive </h1>
+     <ul>
+        <li ng-repeat="user in users">
+             <zzfield dto="user"/>
+        </li>
+     </ul>
 
-        <input field="firstname"/>
-      </div>
+     <xinput/>
     </div>  
   </body>
 </html>
