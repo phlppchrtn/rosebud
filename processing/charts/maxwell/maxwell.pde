@@ -5,6 +5,7 @@ void setup() {
   size(500, 500);
   smooth();
   noStroke();
+  frameRate(3);
   loop();
   for (int i=0; i<100; i++) {
     for (int j=0; j<100; j++) {
@@ -26,12 +27,20 @@ void setup() {
 //int loop = 0;
 
 void draw() {
- // if (loop>100) {
+  // if (loop>100) {
   //  noLoop();
   //}
   //loop++;
   println("drawDatas !");
   background(255);
+  
+  if (mousePressed == true) {
+    int x= Math.round(mouseX/5);
+    int y= Math.round(mouseY/5);
+    power[x][y] = 200;
+    dynamic[x][y] = false;
+  }
+  
   for (int i=1; i<99; i++) {
     for (int j=1; j<99; j++) {
       if (dynamic[i][j]) {
@@ -45,26 +54,10 @@ void draw() {
           + power[i+1][j]
           + power[i+1][j+1])/8;
       }
-//      println("["+i+"]["+j+"]"+power[i][j]);
-    }
-  }
-
-  for (int i=0; i<100; i++) {
-    for (int j=0; j<100; j++) {
-      fill(power[i][j]); 
-      stroke(153);
+      fill(power[i][j]);
+      stroke(255);
       rect(5*i, 5*j, 5, 5);
     }
   }
-}
-
-void mouseClicked(){
-  println("X="+Math.round(mouseX/5));
-  println("Y="+Math.round(mouseY/5));
-  int x= Math.round(mouseX/5);
-  int y= Math.round(mouseY/5);
-  power[x][y] = 200;
-  dynamic[x][y] = false;
-  
 }
 
