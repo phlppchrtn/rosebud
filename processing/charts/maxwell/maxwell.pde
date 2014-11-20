@@ -1,48 +1,44 @@
-float[][] power= new float[100][100];
-boolean [][] dynamic =new boolean [100][100];
+int cols=10;
+int rows=10;
+
+int[][] power= new int[cols][rows];
+boolean [][] dynamic =new boolean [cols][rows];
 
 void setup() {
   size(500, 500);
   smooth();
   noStroke();
-  frameRate(3);
   loop();
-  for (int i=0; i<100; i++) {
-    for (int j=0; j<100; j++) {
+  for (int i=0; i<cols; i++) {
+    for (int j=0; j<rows; j++) {
       power[i][j]=0;
       dynamic[i][j]=true;
     }
   }
 
-  power[10][23]=253;
+  power[10][23]=1;
   dynamic[10][23]=false;
 
-  power[10][24]=253;
+  power[10][24]=1;
   dynamic[10][24]=false;
-  power[10][25]=253;
+
+  power[10][25]=1;
   dynamic[10][25]=false;
-  power[10][26]=253;
+
+  power[10][26]=1;
   dynamic[10][26]=false;
 }
-//int loop = 0;
 
+int loops = 0;
 void draw() {
-  // if (loop>100) {
-  //  noLoop();
-  //}
-  //loop++;
-  println("drawDatas !");
-  background(255);
-  
-  if (mousePressed == true) {
-    int x= Math.round(mouseX/5);
-    int y= Math.round(mouseY/5);
-    power[x][y] = 200;
-    dynamic[x][y] = false;
+   if (loops>10) {
+    noLoop();
   }
-  
-  for (int i=1; i<99; i++) {
-    for (int j=1; j<99; j++) {
+  loops++;
+  println("drawDatas :"+loops);
+  background(255);
+  for (int i=1; i< (cols-1); i++) {
+    for (int j=1; j<(rows-1); j++) {
       if (dynamic[i][j]) {
         power[i][j]= (
         power[i-1][j-1] 
@@ -54,10 +50,19 @@ void draw() {
           + power[i+1][j]
           + power[i+1][j+1])/8;
       }
-      fill(power[i][j]);
+//      fill(lerpColor(#FFFFFF, #CCCCFF, power[i][j]));
+      fill(100*power[i][j]);
       stroke(255);
-      rect(5*i, 5*j, 5, 5);
+      rect(50*i, 50*j, 50, 50);
     }
   }
 }
 
+void mouseClicked(){
+    loops=0;
+    loop();
+    int x= Math.round(mouseX/50);
+    int y= Math.round(mouseY/50);
+    power[x][y] += 1;
+    dynamic[x][y] = false;
+  }
