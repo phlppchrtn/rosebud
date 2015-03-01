@@ -14,7 +14,7 @@ void draw() {
   
   strokeWeight(2);
   noFill();
-  bezier(15, 20, 15, 30, 50, 50, 50, 40);
+  bezier(15, 20, 15, 30, 55, 40, 55, 50);
 
 }
 
