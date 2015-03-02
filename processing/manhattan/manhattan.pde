@@ -4,9 +4,9 @@ Layer layer = new Layer();
 void setup() {
   size(500, 500);
 
-  layer.addShape("a", new Box(100, 100), new Position (10, 10));
-  layer.addShape("b", new Box(100, 100), new Position (200, 10));
-  layer.addShape("c", new Box(100, 100), new Position (150, 150));
+  layer.addShape("a", "box", "movie", 10, 10);
+  layer.addShape("b", "box", "actor", 200, 10);
+  layer.addShape("c", "box", "producer", 150, 150);
   layer.addLink ("a", "c");
   layer.addLink ("a", "b");
   layer.addLink ("b", "c");
@@ -39,6 +39,7 @@ class Slot {
 class Layer {
   HashMap<String, Integer> ids = new HashMap<String, Integer>();
   ArrayList<Shape> shapes = new ArrayList<Shape>();
+  ArrayList<String> labels  = new ArrayList<String>();
   ArrayList<Position> positions  = new ArrayList<Position>();
   //-----
   ArrayList<Link> links  = new ArrayList<Link>();
@@ -86,10 +87,17 @@ class Layer {
     links.add(new Link(id1, id2));
   }
 
-  void addShape(String id, Shape shape, Position position) {
+  void addShape(String id, String shapeType, String label, int x, int y) {
+    Shape shape;
+    if ("box".equals(shapeType)){
+      shape = new Box(100, 100);
+    }else{
+      throw new RuntimeException ("Unknown shape type "+ shapeType);
+    }
     ids.put(id, ids.size());
+    labels.add(label);
     shapes.add(shape);
-    positions.add(position);
+    positions.add(new Position(x, y));
   }
 
   Slot getSlot1(Link link) {
@@ -127,7 +135,7 @@ class Layer {
         strokeWeight(5);
         stroke(#FFFFCC);
       }
-      shapes.get(i).draw(positions.get(i));
+      shapes.get(i).draw(positions.get(i), labels.get(i));
     }
   }
 }
@@ -141,7 +149,7 @@ class Position {
 }
 
 interface Shape {
-  void draw(Position position);
+  void draw(Position position, String label);
   //relative
   boolean inside(int x, int y);
 }
@@ -153,8 +161,10 @@ class Box implements  Shape {
     this.h = h;
   } 
 
-  void draw(Position position) {
+  void draw(Position position, String label) {
     rect (position.x, position.y, w, h);
+    fill(0);
+    text (label, position.x+5 , position.y + 15);
   }
 
   boolean inside(int x, int y) {
