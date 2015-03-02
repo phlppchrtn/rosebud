@@ -53,7 +53,6 @@ class Layer {
 
   void moveShape(int x, int y) {
     Position position = positions.get(selectIndex);
-    println("MOVE shape x :"+ (x-selectMouseX));
 
     position.x += x-selectMouseX;
     position.y += y-selectMouseY;
@@ -101,13 +100,23 @@ class Layer {
   }
 
   Slot getSlot1(Link link) {
-    int i = ids.get(link.id1);
-    return  new Slot ( positions.get(i).x, positions.get(i).y);
+    int i1 = ids.get(link.id1);
+    int i2 = ids.get(link.id2);
+    Position position1 = positions.get(i1);
+    Position position2 = positions.get(i2);
+    
+    Shape shape = shapes.get(i1);
+    return shape.findSlot(-position1.x + position2.x, - position1.y + position2.y);
   }
 
   Slot getSlot2(Link link) {
-    int i = ids.get(link.id2);
-    return  new Slot ( positions.get(i).x, positions.get(i).y);
+    int i1 = ids.get(link.id1);
+    int i2 = ids.get(link.id2);
+    Position position1 = positions.get(i1);
+    Position position2 = positions.get(i2);
+    
+    Shape shape = shapes.get(i2);
+    return shape.findSlot(position1.x - position2.x, position1.y - position2.y);
   }
 
   void draw() {
@@ -116,9 +125,17 @@ class Layer {
     noFill();
 
     for (int i=0; i< links.size (); i++) {
+      Link link = links.get(i);
+      int i1 = ids.get(link.id1);
+      int i2 = ids.get(link.id2);
+
       Slot slot1= getSlot1(links.get(i));
       Slot slot2= getSlot2(links.get(i));
-      line(slot1.x, slot1.y, slot2.x, slot2.y);
+      
+      line(positions.get(i1).x + slot1.x, positions.get(i1).y + slot1.y, positions.get(i2).x +slot2.x, positions.get(i2).y +slot2.y);
+      fill(125);
+      ellipse(positions.get(i1).x + slot1.x, positions.get(i1).y + slot1.y, 10,10);
+      ellipse(positions.get(i2).x + slot2.x, positions.get(i2).y + slot2.y, 10,10);
     }    
 
     fill(255, 0, 0);
@@ -152,6 +169,8 @@ interface Shape {
   void draw(Position position, String label);
   //relative
   boolean inside(int x, int y);
+  
+  Slot findSlot(int x, int y); 
 }
 
 class Box implements  Shape {
@@ -170,6 +189,20 @@ class Box implements  Shape {
   boolean inside(int x, int y) {
     return x>0 && x<w && y>0 && y<h;
   }
+
+  Slot findSlot(int x, int y){
+    float d = sqrt(x*x + y*y);
+
+    if( x>d/2) {
+      return new Slot (w, h/2);
+    } else if( x<-d/2) {
+      return new Slot (0, h/2);
+    } else if( y>d/2) {
+      return new Slot (w/2, h);
+    }  
+    return new Slot (w/2, 0);
+  }
+
 }
 
 
@@ -178,12 +211,10 @@ void mouseMoved() {
 }
 
 void mousePressed() {
-  println("pressed");
   layer.selectShape(mouseX, mouseY);
 }  
 
 void mouseDragged() {
-  println("dragged");
   if (layer.select != null) {
     //If there is a shape selected, the we can move it
     layer.moveShape(mouseX, mouseY);
