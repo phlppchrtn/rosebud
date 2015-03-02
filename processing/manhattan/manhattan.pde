@@ -7,9 +7,11 @@ void setup() {
   layer.addShape("a", "box", "movie", 10, 10);
   layer.addShape("b", "box", "actor", 200, 10);
   layer.addShape("c", "box", "producer", 150, 150);
+  layer.addShape("d", "box", "alias", 123, 150);
   layer.addLink ("a", "c");
   layer.addLink ("a", "b");
   layer.addLink ("b", "c");
+  layer.addLink ("a", "d");
 }
 
 
@@ -28,11 +30,13 @@ class Link {
 }
 
 class Slot {
-  int x;
-  int y;
-  Slot(int x, int y) {
+  int x, y;
+  int vx, vy;
+  Slot(int x, int y, int vx, int vy) {
     this.x = x;
     this.y = y;
+    this.vx = vx;
+    this.vy = vy;
   }
 }
 
@@ -131,8 +135,11 @@ class Layer {
 
       Slot slot1= getSlot1(links.get(i));
       Slot slot2= getSlot2(links.get(i));
-      
-      line(positions.get(i1).x + slot1.x, positions.get(i1).y + slot1.y, positions.get(i2).x +slot2.x, positions.get(i2).y +slot2.y);
+    
+      noFill();
+      bezier (positions.get(i1).x + slot1.x, positions.get(i1).y + slot1.y, positions.get(i1).x + slot1.x + slot1.vx, positions.get(i1).y + slot1.y + slot1.vy, 
+        positions.get(i2).x + slot2.x + slot2.vx, positions.get(i2).y + slot2.y + slot2.vy, positions.get(i2).x + slot2.x , positions.get(i2).y + slot2.y );        
+     // line(positions.get(i1).x + slot1.x, positions.get(i1).y + slot1.y, positions.get(i2).x +slot2.x, positions.get(i2).y +slot2.y);
       fill(125);
       ellipse(positions.get(i1).x + slot1.x, positions.get(i1).y + slot1.y, 10,10);
       ellipse(positions.get(i2).x + slot2.x, positions.get(i2).y + slot2.y, 10,10);
@@ -194,13 +201,13 @@ class Box implements  Shape {
     float d = sqrt(x*x + y*y);
 
     if( x>d/2) {
-      return new Slot (w, h/2);
+      return new Slot (w, h/2, 50, 0);
     } else if( x<-d/2) {
-      return new Slot (0, h/2);
+      return new Slot (0, h/2, -50, 0);
     } else if( y>d/2) {
-      return new Slot (w/2, h);
+      return new Slot (w/2, h, 0, 50);
     }  
-    return new Slot (w/2, 0);
+    return new Slot (w/2, 0, 0, -50);
   }
 
 }
