@@ -1,6 +1,15 @@
 
 Layer layer = new Layer();
 
+color backgroundColor = color(1, 110, 115);
+color shapeColor = color(183, 254, 0);
+color draggedColor = color(0, 56, 57);
+color selectedShapeColor = #40E0D0;
+
+color slotColor = #DC143C; //red crimson  
+color linkColor = #EEEEEE;   
+color textColor = #333333;
+
 void setup() {
   size(500, 500);
 
@@ -16,7 +25,7 @@ void setup() {
 
 
 void draw() {
-  background(#FFFFFF);
+  background(backgroundColor);
   layer.draw();
 }
 
@@ -92,9 +101,10 @@ class Layer {
 
   void addShape(String id, String shapeType, String label, int x, int y) {
     Shape shape;
-    if ("box".equals(shapeType)){
+    if ("box".equals(shapeType)) {
       shape = new Box(100, 100);
-    }else{
+    }
+    else {
       throw new RuntimeException ("Unknown shape type "+ shapeType);
     }
     ids.put(id, ids.size());
@@ -108,7 +118,7 @@ class Layer {
     int i2 = ids.get(link.id2);
     Position position1 = positions.get(i1);
     Position position2 = positions.get(i2);
-    
+
     Shape shape = shapes.get(i1);
     return shape.findSlot(-position1.x + position2.x, - position1.y + position2.y);
   }
@@ -118,16 +128,12 @@ class Layer {
     int i2 = ids.get(link.id2);
     Position position1 = positions.get(i1);
     Position position2 = positions.get(i2);
-    
+
     Shape shape = shapes.get(i2);
     return shape.findSlot(position1.x - position2.x, position1.y - position2.y);
   }
 
   void draw() {
-    stroke(#CCCCCC);
-    strokeWeight(2);
-    noFill();
-
     for (int i=0; i< links.size (); i++) {
       Link link = links.get(i);
       int i1 = ids.get(link.id1);
@@ -135,30 +141,35 @@ class Layer {
 
       Slot slot1= getSlot1(links.get(i));
       Slot slot2= getSlot2(links.get(i));
-    
+
+      stroke(linkColor);
+      strokeWeight(2);
       noFill();
       bezier (positions.get(i1).x + slot1.x, positions.get(i1).y + slot1.y, positions.get(i1).x + slot1.x + slot1.vx, positions.get(i1).y + slot1.y + slot1.vy, 
-        positions.get(i2).x + slot2.x + slot2.vx, positions.get(i2).y + slot2.y + slot2.vy, positions.get(i2).x + slot2.x , positions.get(i2).y + slot2.y );        
-     // line(positions.get(i1).x + slot1.x, positions.get(i1).y + slot1.y, positions.get(i2).x +slot2.x, positions.get(i2).y +slot2.y);
-      fill(125);
-      ellipse(positions.get(i1).x + slot1.x, positions.get(i1).y + slot1.y, 10,10);
-      ellipse(positions.get(i2).x + slot2.x, positions.get(i2).y + slot2.y, 10,10);
+      positions.get(i2).x + slot2.x + slot2.vx, positions.get(i2).y + slot2.y + slot2.vy, positions.get(i2).x + slot2.x, positions.get(i2).y + slot2.y );        
+
+      noStroke();
+      fill(slotColor);
+      ellipse(positions.get(i1).x + slot1.x, positions.get(i1).y + slot1.y, 10, 10);
+      ellipse(positions.get(i2).x + slot2.x, positions.get(i2).y + slot2.y, 10, 10);
     }    
 
-    fill(255, 0, 0);
     for (int i=0; i< shapes.size (); i++) {
-      noStroke();
       if (select == shapes.get(i)) {
-        fill(#CCCCFF);
-      }
+        fill(selectedShapeColor);
+      }      
       else {
-        fill(#FFCCCC);
+        fill(shapeColor);
       }
       //-----  
       if (over == shapes.get(i)) {
         strokeWeight(5);
-        stroke(#FFFFCC);
+        stroke(draggedColor);
       }
+      else {
+        noStroke();
+      }
+      //-----
       shapes.get(i).draw(positions.get(i), labels.get(i));
     }
   }
@@ -176,8 +187,8 @@ interface Shape {
   void draw(Position position, String label);
   //relative
   boolean inside(int x, int y);
-  
-  Slot findSlot(int x, int y); 
+
+  Slot findSlot(int x, int y);
 }
 
 class Box implements  Shape {
@@ -189,27 +200,28 @@ class Box implements  Shape {
 
   void draw(Position position, String label) {
     rect (position.x, position.y, w, h);
-    fill(0);
-    text (label, position.x+5 , position.y + 15);
+    fill(textColor);
+    text (label, position.x+5, position.y + 15);
   }
 
   boolean inside(int x, int y) {
     return x>0 && x<w && y>0 && y<h;
   }
 
-  Slot findSlot(int x, int y){
+  Slot findSlot(int x, int y) {
     float d = sqrt(x*x + y*y);
 
-    if( x>d/2) {
+    if ( x>d/2) {
       return new Slot (w, h/2, 50, 0);
-    } else if( x<-d/2) {
+    } 
+    else if ( x<-d/2) {
       return new Slot (0, h/2, -50, 0);
-    } else if( y>d/2) {
+    } 
+    else if ( y>d/2) {
       return new Slot (w/2, h, 0, 50);
     }  
     return new Slot (w/2, 0, 0, -50);
   }
-
 }
 
 
