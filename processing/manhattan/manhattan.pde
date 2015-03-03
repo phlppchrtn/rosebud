@@ -1,4 +1,11 @@
 
+final float ATTRACTION_STRENGTH = 0.7;  
+final float ATTRACTION_MIN_DISTANCE = 1;
+
+final float SPRING_STRENGTH = 0.1;
+final float SPRING_DAMPING = 0.5;
+final float SPRING_REST_LENGTH = 300;
+
 Layer layer = new Layer();
 
 color backgroundColor = color(1, 110, 115);
@@ -10,17 +17,23 @@ color slotColor = #DC143C; //red crimson
 color linkColor = #EEEEEE;   
 color textColor = #333333;
 
+
 void setup() {
   size(500, 500);
 
   layer.addShape("a", "box", "movie", 10, 10);
   layer.addShape("b", "box", "actor", 200, 10);
   layer.addShape("c", "box", "producer", 150, 150);
-  layer.addShape("d", "box", "alias", 123, 150);
+  layer.addShape("d", "box", "alias", 10, 150);
+  layer.addShape("e", "box", "country", 10, 150);
+
   layer.addLink ("a", "c");
   layer.addLink ("a", "b");
   layer.addLink ("b", "c");
   layer.addLink ("a", "d");
+  layer.addLink ("d", "e");
+
+  layer.init();
 }
 
 
@@ -39,8 +52,8 @@ class Link {
 }
 
 class Slot {
-  int x, y;
-  int vx, vy;
+  float x, y;
+  float vx, vy;
   Slot(int x, int y, int vx, int vy) {
     this.x = x;
     this.y = y;
@@ -50,16 +63,19 @@ class Slot {
 }
 
 class Layer {
+  ParticleSystem particleSystem = new ParticleSystem();
+
   HashMap<String, Integer> ids = new HashMap<String, Integer>();
+  ArrayList<Particle> particles = new  ArrayList<Particle>();
   ArrayList<Shape> shapes = new ArrayList<Shape>();
   ArrayList<String> labels  = new ArrayList<String>();
   ArrayList<Position> positions  = new ArrayList<Position>();
   //-----
   ArrayList<Link> links  = new ArrayList<Link>();
 
-  Shape over;
+  Shape overShape;
   //-----
-  Shape select;
+  Shape selectedShape;
   int selectMouseX, selectMouseY; 
   int selectIndex;
   //-----
@@ -71,22 +87,23 @@ class Layer {
     position.y += y-selectMouseY;
     selectMouseX = x; 
     selectMouseY = y;
+    rebuildCoordinatesFromShapes();
   }
 
   void overShape (int x, int y) {
-    over  = find(x, y);
+    overShape  = find(x, y);
   }  
 
   void selectShape (int x, int y) {
-    select = find(x, y);
-    if (select != null) {
+    selectedShape = find(x, y);
+    if (selectedShape != null) {
       selectMouseX = x;
       selectMouseY = y;
-      selectIndex = shapes.indexOf(select);
+      selectIndex = shapes.indexOf(selectedShape);
     }
   }  
 
-  Shape  find (int x, int y) {
+  Shape  find (float x, float y) {
     for (int i=0; i< positions.size (); i++) {
       if (shapes.get(i).inside(x - positions.get(i).x, y- positions.get(i).y)) {
         return shapes.get(i);
@@ -97,9 +114,13 @@ class Layer {
 
   void addLink(String id1, String id2) {
     links.add(new Link(id1, id2));
+    //-----
+    Particle a = particles.get(ids.get(id1));
+    Particle b = particles.get(ids.get(id2));
+    particleSystem.makeAttraction(a, b, -ATTRACTION_STRENGTH, ATTRACTION_MIN_DISTANCE );
   }
 
-  void addShape(String id, String shapeType, String label, int x, int y) {
+  void addShape(String id, String shapeType, String label, float x, float y) {
     Shape shape;
     if ("box".equals(shapeType)) {
       shape = new Box(100, 100);
@@ -111,6 +132,10 @@ class Layer {
     labels.add(label);
     shapes.add(shape);
     positions.add(new Position(x, y));
+    //-----
+    Particle particle =  particleSystem.makeParticle();
+    particle.position.set(x, y, 0);
+    particles.add(particle);
   }
 
   Slot getSlot1(Link link) {
@@ -133,7 +158,32 @@ class Layer {
     return shape.findSlot(position1.x - position2.x, position1.y - position2.y);
   }
 
+  void rebuildCoordinatesFromSystem() {
+    for (int i = 0; i<particles.size(); i++) {  
+      positions.get(i).x = particles.get(i).position.x;
+      positions.get(i).y = particles.get(i).position.y;
+    }
+  }
+  void rebuildCoordinatesFromShapes() {
+    for (int i = 0; i<particles.size(); i++) {  
+      particles.get(i).position.set(positions.get(i).x, positions.get(i).y, 0);
+    }
+  }
+
+  void init() {
+    for (int i=0; i<particles.size(); i++) { 
+      Particle a = particles.get(i);
+      for (int j = i+1 ; j<particles.size(); j++) {
+        Particle b = particles.get(j);
+        particleSystem.makeSpring(a, b, SPRING_STRENGTH, SPRING_DAMPING, SPRING_REST_LENGTH);
+      }
+    }
+  }
   void draw() {
+    if (! mousePressed){ 
+      particleSystem.tick();
+      rebuildCoordinatesFromSystem();
+    }
     for (int i=0; i< links.size (); i++) {
       Link link = links.get(i);
       int i1 = ids.get(link.id1);
@@ -155,14 +205,14 @@ class Layer {
     }    
 
     for (int i=0; i< shapes.size (); i++) {
-      if (select == shapes.get(i)) {
+      if (selectedShape == shapes.get(i)) {
         fill(selectedShapeColor);
       }      
       else {
         fill(shapeColor);
       }
       //-----  
-      if (over == shapes.get(i)) {
+      if (overShape == shapes.get(i)) {
         strokeWeight(5);
         stroke(draggedColor);
       }
@@ -176,8 +226,8 @@ class Layer {
 }
 
 class Position {
-  int x, y;
-  Position (int x, int y) {
+  float x, y;
+  Position (float x, float y) {
     this.x = x; 
     this.y = y;
   }
@@ -186,9 +236,9 @@ class Position {
 interface Shape {
   void draw(Position position, String label);
   //relative
-  boolean inside(int x, int y);
+  boolean inside(float x, float y);
 
-  Slot findSlot(int x, int y);
+  Slot findSlot(float x, float y);
 }
 
 class Box implements  Shape {
@@ -204,11 +254,11 @@ class Box implements  Shape {
     text (label, position.x+5, position.y + 15);
   }
 
-  boolean inside(int x, int y) {
+  boolean inside(float x, float y) {
     return x>0 && x<w && y>0 && y<h;
   }
 
-  Slot findSlot(int x, int y) {
+  Slot findSlot(float x, float y) {
     float d = sqrt(x*x + y*y);
 
     if ( x>d/2) {
@@ -234,7 +284,7 @@ void mousePressed() {
 }  
 
 void mouseDragged() {
-  if (layer.select != null) {
+  if (layer.selectedShape != null) {
     //If there is a shape selected, the we can move it
     layer.moveShape(mouseX, mouseY);
   }
