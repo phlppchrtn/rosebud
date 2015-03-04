@@ -1,8 +1,9 @@
 class Box implements  Shape {
-  Position position;
-  int w, h;
-  private String label;
-  private Particle particle;
+  private final Position position;
+  private final int w;
+  private final int h;
+  private final String label;
+  private final Particle particle;
 
   Box (Position position, int w, int h, Particle particle, String label) {
     this.position = position;  

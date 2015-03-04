@@ -1,8 +1,8 @@
 class LayerBuilder {
-  private ParticleSystem particleSystem = new ParticleSystem();
-  private HashMap<String, Integer> ids = new HashMap<String, Integer>();
-  private ArrayList<Shape> shapes = new ArrayList<Shape>();
-  private ArrayList<Link> links  = new ArrayList<Link>();
+  private final ParticleSystem particleSystem = new ParticleSystem();
+  private final HashMap<String, Integer> ids = new HashMap<String, Integer>();
+  private final ArrayList<Shape> shapes = new ArrayList<Shape>();
+  private final ArrayList<Link> links  = new ArrayList<Link>();
 
 
   public LayerBuilder addLink(String id1, String id2) {

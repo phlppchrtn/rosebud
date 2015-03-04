@@ -44,12 +44,12 @@ import java.util.Iterator;
 //package traer.physics;
 public class Attraction implements Force
 {
-  Particle one;
-  Particle b;
-  float k;
+  final Particle one;
+  final Particle b;
+  final float k;
+  final float distanceMin;
+  final float distanceMinSquared;
   boolean on = true;
-  float distanceMin;
-  float distanceMinSquared;
 
   public Attraction( Particle a, Particle b, float k, float distanceMin )
   {
@@ -60,27 +60,14 @@ public class Attraction implements Force
     this.distanceMinSquared = distanceMin*distanceMin;
   }
 
-  protected void        setA( Particle p ) { 
-    one = p;
-  }
-  protected void        setB( Particle p ) { 
-    b = p;
-  }
   public final float    getMinimumDistance() { 
     return distanceMin;
-  }
-  public final void     setMinimumDistance( float d ) { 
-    distanceMin = d; 
-    distanceMinSquared = d*d;
   }
   public final void     turnOff() { 
     on = false;
   }
   public final void     turnOn() { 
     on = true;
-  }
-  public final void     setStrength( float k ) { 
-    this.k = k;
   }
   public final Particle getOneEnd() { 
     return one;
@@ -119,9 +106,6 @@ public class Attraction implements Force
   public final boolean isOn() { 
     return on;
   }
-  public final boolean isOff() { 
-    return !on;
-  }
 } // Attraction
 
 //===========================================================================================
@@ -129,6 +113,12 @@ public class Attraction implements Force
 //===========================================================================================
 // attract positive repel negative
 public class UniversalAttraction implements Force {
+  final float k;
+  final float distanceMin;
+  final ArrayList targetList;
+  final float distanceMinSquared;
+  boolean on = true;
+
   public UniversalAttraction( float k, float distanceMin, ArrayList targetList )
   {
     this.k = k;
@@ -137,26 +127,19 @@ public class UniversalAttraction implements Force {
     this.targetList = targetList;
   }
 
-  float k;
-  boolean on = true;
-  float distanceMin;
-  float distanceMinSquared;
-  ArrayList targetList;
   public final float    getMinimumDistance() { 
     return distanceMin;
   }
-  public final void     setMinimumDistance( float d ) { 
+/*  public final void     setMinimumDistance( float d ) { 
     distanceMin = d; 
     distanceMinSquared = d*d;
   }
+ */ 
   public final void     turnOff() { 
     on = false;
   }
   public final void     turnOn() { 
     on = true;
-  }
-  public final void     setStrength( float k ) { 
-    this.k = k;
   }
   public final float   getStrength() { 
     return k;
@@ -164,10 +147,6 @@ public class UniversalAttraction implements Force {
   public final boolean isOn() { 
     return on;
   }
-  public final boolean isOff() { 
-    return !on;
-  }
-
 
   public void apply() 
   { 
@@ -200,6 +179,14 @@ public class UniversalAttraction implements Force {
 //                                    Pulse
 //===========================================================================================
 public class Pulse implements Force {
+  final float k;
+  final float distanceMin;
+  final float distanceMinSquared;
+  final PVector origin;
+  final ArrayList targetList;
+  float lifetime;
+  boolean on = true;
+
   public Pulse( float k, float distanceMin, PVector origin, float lifetime, ArrayList targetList )
   {
     this.k = k;
@@ -210,13 +197,6 @@ public class Pulse implements Force {
     this.lifetime = lifetime;
   }
 
-  float k;
-  boolean on = true;
-  float distanceMin;
-  float distanceMinSquared;
-  float lifetime;
-  PVector origin;
-  ArrayList targetList;
 
   public final void     turnOff() { 
     on = false;
@@ -226,9 +206,6 @@ public class Pulse implements Force {
   }
   public final boolean  isOn() { 
     return on;
-  }
-  public final boolean  isOff() { 
-    return !on;
   }
   public final boolean  tick( float time ) { 
     lifetime-=time; 
@@ -261,7 +238,7 @@ public class Pulse implements Force {
 //package traer.physics;
 public class EulerIntegrator implements Integrator
 {
-  ParticleSystem s;
+  final ParticleSystem s;
 
   public EulerIntegrator( ParticleSystem s ) { 
     this.s = s;
@@ -291,12 +268,11 @@ public class EulerIntegrator implements Integrator
 // @author jeffrey traer bernstein
 public interface Force
 {
-  public void    turnOn();
-  public void    turnOff();
-  public boolean isOn();
-  public boolean isOff();
-  public void    apply();
-} // Force
+   void    turnOn();
+   void    turnOff();
+   boolean isOn();
+   void    apply();
+}
 
 //===========================================================================================
 //                                      Integrator
@@ -304,8 +280,8 @@ public interface Force
 //package traer.physics;
 public interface Integrator 
 {
-  public void step( float t );
-} // Integrator
+   void step( float t );
+}
 
 //===========================================================================================
 //                                    ModifiedEulerIntegrator
@@ -313,7 +289,7 @@ public interface Integrator
 //package traer.physics;
 public class ModifiedEulerIntegrator implements Integrator
 {
-  ParticleSystem s;
+  final ParticleSystem s;
   public ModifiedEulerIntegrator( ParticleSystem s ) { 
     this.s = s;
   }
@@ -396,10 +372,6 @@ public class Particle
     return this;
   }
 
-  // @see traer.physics.AbstractParticle#isFixed()
-  public final boolean isFixed() { 
-    return fixed0;
-  }
 
   // @see traer.physics.AbstractParticle#isFree()
   public final boolean isFree() { 
@@ -804,10 +776,11 @@ public class RungeKuttaIntegrator implements Integrator
 // @author jeffrey traer bernstein
 public class Spring implements Force
 {
-  float springConstant0;
-  float damping0;
-  float restLength0;
-  Particle one, b;
+  final float springConstant0;
+  final float damping0;
+  final float restLength0;
+  final Particle one;
+  final Particle b;
   boolean on = true;
 
   public Spring( Particle A, Particle B, float ks, float d, float r )
@@ -828,9 +801,6 @@ public class Spring implements Force
   public final boolean  isOn() { 
     return on;
   }
-  public final boolean  isOff() { 
-    return !on;
-  }
   public final Particle getOneEnd() { 
     return one;
   }
@@ -846,17 +816,9 @@ public class Spring implements Force
   public final float    strength() { 
     return springConstant0;
   }
-  public final void     setStrength( float ks ) { 
-    springConstant0 = ks;
-  }
+
   public final float    damping() { 
     return damping0;
-  }
-  public final void     setDamping( float d ) { 
-    damping0 = d;
-  }
-  public final void     setRestLength( float l ) { 
-    restLength0 = l;
   }
 
   public final void apply()
@@ -888,12 +850,6 @@ public class Spring implements Force
       if ( b.isFree() )
         b.force.add( PVector.mult(a2b, -1, a2b) );
     }
-  }
-  protected void setA( Particle p ) { 
-    one = p;
-  }
-  protected void setB( Particle p ) { 
-    b = p;
   }
 } // Spring
 
@@ -1020,7 +976,7 @@ public class Smoother3D implements Tickable
 //package traer.animator;
 public interface Tickable
 {
-  public abstract void tick();
-  public abstract void setSmoothness(float f);
+   void tick();
+  void setSmoothness(float f);
 } // Tickable
 
