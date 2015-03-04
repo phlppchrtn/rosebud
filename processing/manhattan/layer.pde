@@ -1,16 +1,15 @@
 class Layer {
-  ParticleSystem particleSystem = new ParticleSystem();
+  private ParticleSystem particleSystem = new ParticleSystem();
 
-  HashMap<String, Integer> ids = new HashMap<String, Integer>();
-  ArrayList<Particle> particles = new  ArrayList<Particle>();
-  ArrayList<Shape> shapes = new ArrayList<Shape>();
+  private HashMap<String, Integer> ids = new HashMap<String, Integer>();
+  private ArrayList<Shape> shapes = new ArrayList<Shape>();
   //-----
-  ArrayList<Link> links  = new ArrayList<Link>();
+  private ArrayList<Link> links  = new ArrayList<Link>();
 
-  Shape overShape;
+  private Shape overShape;
   //-----
-  Shape selectedShape;
-  int selectMouseX, selectMouseY; 
+  private Shape selectedShape;
+  private int selectMouseX, selectMouseY; 
   //-----
 
   public void moveShape(int x, int y) {
@@ -35,7 +34,7 @@ class Layer {
     }
   }  
 
-  Shape  find (float x, float y) {
+  private Shape  find (float x, float y) {
     for (int i=0; i< shapes.size (); i++) {
       if (shapes.get(i).inside(x, y)) {
         return shapes.get(i);
@@ -44,52 +43,51 @@ class Layer {
     return null;
   }
 
-  void addLink(String id1, String id2) {
-    int i1 = ids.get(id1);
-    int i2 = ids.get(id2);
+  public void addLink(String id1, String id2) {
+    Shape shape1 = shapes.get(ids.get(id1));
+    Shape shape2 = shapes.get(ids.get(id2));
 
-    links.add(new Link(shapes.get(i1), shapes.get(i2)));
+    links.add(new Link(shape1, shape2));
     //-----
-    Particle a = particles.get(i1);
-    Particle b = particles.get(i2);
+    Particle a = shape1.getParticle();
+    Particle b = shape2.getParticle();
     particleSystem.makeAttraction(a, b, -ATTRACTION_STRENGTH, ATTRACTION_MIN_DISTANCE );
   }
 
-  void addShape(String id, String shapeType, String label, float x, float y) {
+  public void addShape(String id, String shapeType, String label, float x, float y) {
     Shape shape;
+    Particle particle =  particleSystem.makeParticle();
+    particle.position.set(x, y, 0);
+
     if ("box".equals(shapeType)) {
-      shape = new Box(new Position(x, y), 100, 100, label);
+      shape = new Box(new Position(x, y), 100, 100, particle, label);
     }
     else {
       throw new RuntimeException ("Unknown shape type "+ shapeType);
     }
     ids.put(id, ids.size());
     shapes.add(shape);
-    //-----
-    Particle particle =  particleSystem.makeParticle();
-    particle.position.set(x, y, 0);
-    particles.add(particle);
   }
 
 
-  void rebuildCoordinatesFromSystem() {
-    for (int i = 0; i<particles.size(); i++) {  
-      shapes.get(i).getPosition().x = particles.get(i).position.x;
-      shapes.get(i).getPosition().y = particles.get(i).position.y;
+  private void rebuildCoordinatesFromSystem() {
+    for (Shape shape :  shapes) {  
+      shape.getPosition().x = shape.getParticle().position.x;
+      shape.getPosition().y = shape.getParticle().position.y;
     }
   }
-  void rebuildCoordinatesFromShapes() {
-    for (int i = 0; i<particles.size(); i++) {  
-      Position position = shapes.get(i).getPosition(); 
-      particles.get(i).position.set(position.x, position.y, 0);
+  private void rebuildCoordinatesFromShapes() {
+    for (Shape shape :  shapes) {  
+      shape.getParticle().position.x =shape.getPosition().x;
+      shape.getParticle().position.y = shape.getPosition().y;
     }
   }
 
   void init() {
-    for (int i=0; i<particles.size(); i++) { 
-      Particle a = particles.get(i);
-      for (int j = i+1 ; j<particles.size(); j++) {
-        Particle b = particles.get(j);
+    for (int i=0; i< shapes.size(); i++) { 
+      Particle a = shapes.get(i).getParticle();
+      for (int j = i+1 ; j<shapes.size(); j++) {
+        Particle b = shapes.get(j).getParticle();
         particleSystem.makeSpring(a, b, SPRING_STRENGTH, SPRING_DAMPING, SPRING_REST_LENGTH);
       }
     }
@@ -97,7 +95,7 @@ class Layer {
   public void draw() {
     particleSystem.tick();
     rebuildCoordinatesFromSystem();
-    for (Link link : links){
+    for (Link link : links) {
       Slot slot1= link.shape1.findBestSlot(link.shape2);
       Slot slot2= link.shape2.findBestSlot(link.shape1);
 

@@ -6,4 +6,6 @@ interface Shape {
   Slot findBestSlot(Shape shape);
   
   Position getPosition();
+  
+  Particle getParticle();
 }

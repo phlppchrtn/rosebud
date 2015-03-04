@@ -1,17 +1,25 @@
 class Box implements  Shape {
   Position position;
   int w, h;
-  String label;
-  Box (Position position, int w, int h, String label) {
+  private String label;
+  private Particle particle;
+  
+  Box (Position position, int w, int h, Particle particle, String label) {
     this.position = position;  
     this.w = w; 
     this.h = h;
+    this.particle = particle; 
     this.label = label;
   } 
 
   Position getPosition (){
     return position;
   }
+  
+  Particle getParticle(){
+    return particle;
+  }
+  
   void draw() {
     rect (position.x, position.y, w, h);
     fill(textColor);
