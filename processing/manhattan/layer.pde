@@ -1,10 +1,7 @@
 class Layer {
-  private ParticleSystem particleSystem = new ParticleSystem();
-
-  private HashMap<String, Integer> ids = new HashMap<String, Integer>();
-  private ArrayList<Shape> shapes = new ArrayList<Shape>();
-  //-----
-  private ArrayList<Link> links  = new ArrayList<Link>();
+  private final ParticleSystem particleSystem;
+  private final ArrayList<Shape> shapes;
+  private final ArrayList<Link> links;
 
   private Shape overShape;
   //-----
@@ -13,6 +10,27 @@ class Layer {
   
   private float translateX = 0;
   private float translateY = 0;
+  
+  Layer( ParticleSystem particleSystem, ArrayList<Shape> shapes, ArrayList<Link> links){
+    this.particleSystem = particleSystem;
+    this.shapes = shapes;
+    this.links = links;
+    
+    //-----Springs    
+    for (int i=0; i< shapes.size(); i++) { 
+      Particle a = shapes.get(i).getParticle();
+      for (int j = i+1 ; j<shapes.size(); j++) {
+        Particle b = shapes.get(j).getParticle();
+        particleSystem.makeSpring(a, b, SPRING_STRENGTH, SPRING_DAMPING, SPRING_REST_LENGTH);
+      }
+    }
+    //Once System is built, we can define the coordinates.
+    rebuildCoordinatesFromShapes();
+  }
+
+
+  
+  
   public void dragShape(int x, int y) {
     if (selectedShape != null) {
       Position position =selectedShape.getPosition();
@@ -43,7 +61,7 @@ class Layer {
   public void selectShape (int x, int y) {
     selectedShape = find(x-translateX, y-translateY); //selectedShape may be null
     if (selectedShape !=null){
-      selectedShape.getParticle()..makeFixed(); 
+      selectedShape.getParticle().makeFixed(); 
     }
     selectMouseX = x;
     selectMouseY = y;
@@ -58,30 +76,6 @@ class Layer {
     return null;
   }
 
-  public void addLink(String id1, String id2) {
-    Shape shape1 = shapes.get(ids.get(id1));
-    Shape shape2 = shapes.get(ids.get(id2));
-
-    links.add(new Link(shape1, shape2));
-    //-----
-    Particle a = shape1.getParticle();
-    Particle b = shape2.getParticle();
-    particleSystem.makeAttraction(a, b, -ATTRACTION_STRENGTH, ATTRACTION_MIN_DISTANCE );
-  }
-
-  public void addShape(String id, String shapeType, String label, float x, float y) {
-    Shape shape;
-    Particle particle =  particleSystem.makeParticle();
-
-    if ("box".equals(shapeType)) {
-      shape = new Box(new Position(x, y), 100, 100, particle, label);
-    }
-    else { 
-      throw new RuntimeException ("Unknown shape type "+ shapeType);
-    }
-    ids.put(id, ids.size());
-    shapes.add(shape);
-  }
 
 
   private void rebuildCoordinatesFromSystem() {
@@ -97,18 +91,7 @@ class Layer {
     }
   }
 
-  void init() {
-    for (int i=0; i< shapes.size(); i++) { 
-      Particle a = shapes.get(i).getParticle();
-      for (int j = i+1 ; j<shapes.size(); j++) {
-        Particle b = shapes.get(j).getParticle();
-        particleSystem.makeSpring(a, b, SPRING_STRENGTH, SPRING_DAMPING, SPRING_REST_LENGTH);
-      }
-    }
-    //Once System is built, we can define the coordinates.
-    rebuildCoordinatesFromShapes();
-  }
-
+ 
   public void draw() {
     translate(translateX, translateY);
     particleSystem.tick();
