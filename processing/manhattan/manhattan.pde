@@ -60,13 +60,17 @@ void mouseMoved() {
 }
 
 void mousePressed() {
+  cursor(HAND);
   layer.selectShape(mouseX, mouseY);
 }  
 
+void mouseReleased() {
+  cursor(ARROW);
+  layer.unselectShape();
+}  
+
 void mouseDragged() {
-  if (layer.selectedShape != null) {
     //If there is a shape selected, the we can move it
-    layer.moveShape(mouseX, mouseY);
-  }
+    layer.dragShape(mouseX, mouseY);
 }
 

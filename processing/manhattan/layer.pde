@@ -10,28 +10,43 @@ class Layer {
   //-----
   private Shape selectedShape;
   private int selectMouseX, selectMouseY; 
-  //-----
+  
+  private float translateX = 0;
+  private float translateY = 0;
+  public void dragShape(int x, int y) {
+    if (selectedShape != null) {
+      Position position =selectedShape.getPosition();
 
-  public void moveShape(int x, int y) {
-    Position position =selectedShape.getPosition();
-
-    position.x += x-selectMouseX;
-    position.y += y-selectMouseY;
-    selectMouseX = x; 
-    selectMouseY = y;
-    rebuildCoordinatesFromShapes();
+      position.x += x-selectMouseX;
+      position.y += y-selectMouseY;
+      selectMouseX = x; 
+      selectMouseY = y;
+      rebuildCoordinatesFromShapes();
+    }
+    else {
+      translateX = x-selectMouseX;
+      translateY = y-selectMouseY;
+    }
   }
 
   public void overShape (int x, int y) {
     overShape  = find(x, y);
   }  
 
-  public void selectShape (int x, int y) {
-    selectedShape = find(x, y);
-    if (selectedShape != null) {
-      selectMouseX = x;
-      selectMouseY = y;
+  public void unselectShape () {
+    if (selectedShape !=null){
+      selectedShape.getParticle().makeFree(); 
+      selectedShape = null;
     }
+  } 
+
+  public void selectShape (int x, int y) {
+    selectedShape = find(x-translateX, y-translateY); //selectedShape may be null
+    if (selectedShape !=null){
+      selectedShape.getParticle()..makeFixed(); 
+    }
+    selectMouseX = x;
+    selectMouseY = y;
   }  
 
   private Shape  find (float x, float y) {
@@ -57,12 +72,11 @@ class Layer {
   public void addShape(String id, String shapeType, String label, float x, float y) {
     Shape shape;
     Particle particle =  particleSystem.makeParticle();
-    particle.position.set(x, y, 0);
 
     if ("box".equals(shapeType)) {
       shape = new Box(new Position(x, y), 100, 100, particle, label);
     }
-    else {
+    else { 
       throw new RuntimeException ("Unknown shape type "+ shapeType);
     }
     ids.put(id, ids.size());
@@ -91,8 +105,12 @@ class Layer {
         particleSystem.makeSpring(a, b, SPRING_STRENGTH, SPRING_DAMPING, SPRING_REST_LENGTH);
       }
     }
+    //Once System is built, we can define the coordinates.
+    rebuildCoordinatesFromShapes();
   }
+
   public void draw() {
+    translate(translateX, translateY);
     particleSystem.tick();
     rebuildCoordinatesFromSystem();
     for (Link link : links) {
