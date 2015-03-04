@@ -3,8 +3,8 @@ class LayerBuilder {
   private HashMap<String, Integer> ids = new HashMap<String, Integer>();
   private ArrayList<Shape> shapes = new ArrayList<Shape>();
   private ArrayList<Link> links  = new ArrayList<Link>();
-  
-  
+
+
   public LayerBuilder addLink(String id1, String id2) {
     Shape shape1 = shapes.get(ids.get(id1));
     Shape shape2 = shapes.get(ids.get(id2));
@@ -23,16 +23,16 @@ class LayerBuilder {
 
     if ("box".equals(shapeType)) {
       shape = new Box(new Position(x, y), 100, 100, particle, label);
-    }
-    else { 
+    } else { 
       throw new RuntimeException ("Unknown shape type "+ shapeType);
     }
     ids.put(id, ids.size());
     shapes.add(shape);
     return this;
   }
-  
-  Layer build(){
+
+  Layer build() {
     return new Layer (particleSystem, shapes, links);
   }
 }
+

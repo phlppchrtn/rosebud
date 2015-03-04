@@ -7,19 +7,19 @@ class Layer {
   //-----
   private Shape selectedShape;
   private int selectMouseX, selectMouseY; 
-  
+
   private float translateX = 0;
   private float translateY = 0;
-  
-  Layer( ParticleSystem particleSystem, ArrayList<Shape> shapes, ArrayList<Link> links){
+
+  Layer( ParticleSystem particleSystem, ArrayList<Shape> shapes, ArrayList<Link> links) {
     this.particleSystem = particleSystem;
     this.shapes = shapes;
     this.links = links;
-    
+
     //-----Springs    
-    for (int i=0; i< shapes.size(); i++) { 
+    for (int i=0; i< shapes.size (); i++) { 
       Particle a = shapes.get(i).getParticle();
-      for (int j = i+1 ; j<shapes.size(); j++) {
+      for (int j = i+1; j<shapes.size (); j++) {
         Particle b = shapes.get(j).getParticle();
         particleSystem.makeSpring(a, b, SPRING_STRENGTH, SPRING_DAMPING, SPRING_REST_LENGTH);
       }
@@ -29,8 +29,8 @@ class Layer {
   }
 
 
-  
-  
+
+
   public void dragShape(int x, int y) {
     if (selectedShape != null) {
       Position position =selectedShape.getPosition();
@@ -40,8 +40,7 @@ class Layer {
       selectMouseX = x; 
       selectMouseY = y;
       rebuildCoordinatesFromShapes();
-    }
-    else {
+    } else {
       translateX = x-selectMouseX;
       translateY = y-selectMouseY;
     }
@@ -52,7 +51,7 @@ class Layer {
   }  
 
   public void unselectShape () {
-    if (selectedShape !=null){
+    if (selectedShape !=null) {
       selectedShape.getParticle().makeFree(); 
       selectedShape = null;
     }
@@ -60,8 +59,8 @@ class Layer {
 
   public void selectShape (int x, int y) {
     selectedShape = find(x-translateX, y-translateY); //selectedShape may be null
-    if (selectedShape !=null){
-      selectedShape.getParticle().makeFixed(); 
+    if (selectedShape !=null) {
+      selectedShape.getParticle().makeFixed();
     }
     selectMouseX = x;
     selectMouseY = y;
@@ -79,19 +78,19 @@ class Layer {
 
 
   private void rebuildCoordinatesFromSystem() {
-    for (Shape shape :  shapes) {  
+    for (Shape shape : shapes) {  
       shape.getPosition().x = shape.getParticle().position.x;
       shape.getPosition().y = shape.getParticle().position.y;
     }
   }
   private void rebuildCoordinatesFromShapes() {
-    for (Shape shape :  shapes) {  
+    for (Shape shape : shapes) {  
       shape.getParticle().position.x =shape.getPosition().x;
       shape.getParticle().position.y = shape.getPosition().y;
     }
   }
 
- 
+
   public void draw() {
     translate(translateX, translateY);
     particleSystem.tick();
@@ -117,16 +116,14 @@ class Layer {
     for (Shape shape : shapes) {
       if (selectedShape == shape) {
         fill(selectedShapeColor);
-      }      
-      else {
+      } else {
         fill(shapeColor);
       }
       //-----  
       if (overShape == shape) {
         strokeWeight(5);
         stroke(draggedColor);
-      }
-      else {
+      } else {
         noStroke();
       }
       //-----

@@ -3,7 +3,7 @@ class Box implements  Shape {
   int w, h;
   private String label;
   private Particle particle;
-  
+
   Box (Position position, int w, int h, Particle particle, String label) {
     this.position = position;  
     this.w = w; 
@@ -12,14 +12,14 @@ class Box implements  Shape {
     this.label = label;
   } 
 
-  Position getPosition (){
+  Position getPosition () {
     return position;
   }
-  
-  Particle getParticle(){
+
+  Particle getParticle() {
     return particle;
   }
-  
+
   void draw() {
     rect (position.x, position.y, w, h);
     fill(textColor);
@@ -31,18 +31,16 @@ class Box implements  Shape {
   }
 
   Slot findBestSlot(Shape shape2) {
-     float x = shape2.getPosition().x - position.x;
-     float y = shape2.getPosition().y  - position.y;
-    
+    float x = shape2.getPosition().x - position.x;
+    float y = shape2.getPosition().y  - position.y;
+
     float d = sqrt(x*x + y*y);
 
     if ( x>d/2) {
       return new Slot (w, h/2, 50, 0);
-    } 
-    else if ( x<-d/2) {
+    } else if ( x<-d/2) {
       return new Slot (0, h/2, -50, 0);
-    } 
-    else if ( y>d/2) {
+    } else if ( y>d/2) {
       return new Slot (w/2, h, 0, 50);
     }  
     return new Slot (w/2, 0, 0, -50);

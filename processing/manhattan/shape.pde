@@ -4,8 +4,9 @@ interface Shape {
 
   //Find the best slot to link the shape 
   Slot findBestSlot(Shape shape);
-  
+
   Position getPosition();
-  
+
   Particle getParticle();
 }
+
