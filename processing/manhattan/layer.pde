@@ -13,7 +13,7 @@ class Layer {
   int selectMouseX, selectMouseY; 
   //-----
 
-  void moveShape(int x, int y) {
+  public void moveShape(int x, int y) {
     Position position =selectedShape.getPosition();
 
     position.x += x-selectMouseX;
@@ -23,11 +23,11 @@ class Layer {
     rebuildCoordinatesFromShapes();
   }
 
-  void overShape (int x, int y) {
+  public void overShape (int x, int y) {
     overShape  = find(x, y);
   }  
 
-  void selectShape (int x, int y) {
+  public void selectShape (int x, int y) {
     selectedShape = find(x, y);
     if (selectedShape != null) {
       selectMouseX = x;
@@ -94,12 +94,12 @@ class Layer {
       }
     }
   }
-  void draw() {
+  public void draw() {
     particleSystem.tick();
     rebuildCoordinatesFromSystem();
     for (Link link : links){
-      Slot slot1= link.shape1.findSlot(link.shape2);
-      Slot slot2= link.shape2.findSlot(link.shape1);
+      Slot slot1= link.shape1.findBestSlot(link.shape2);
+      Slot slot2= link.shape2.findBestSlot(link.shape1);
 
       stroke(linkColor);
       strokeWeight(2);
@@ -115,15 +115,15 @@ class Layer {
       ellipse(position2.x + slot2.x, position2.y + slot2.y, 10, 10);
     }    
 
-    for (int i=0; i< shapes.size (); i++) {
-      if (selectedShape == shapes.get(i)) {
+    for (Shape shape : shapes) {
+      if (selectedShape == shape) {
         fill(selectedShapeColor);
       }      
       else {
         fill(shapeColor);
       }
       //-----  
-      if (overShape == shapes.get(i)) {
+      if (overShape == shape) {
         strokeWeight(5);
         stroke(draggedColor);
       }
@@ -131,7 +131,7 @@ class Layer {
         noStroke();
       }
       //-----
-      shapes.get(i).draw();
+      shape.draw();
     }
   }
 }
