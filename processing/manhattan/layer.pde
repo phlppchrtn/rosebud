@@ -4,7 +4,6 @@ class Layer {
   HashMap<String, Integer> ids = new HashMap<String, Integer>();
   ArrayList<Particle> particles = new  ArrayList<Particle>();
   ArrayList<Shape> shapes = new ArrayList<Shape>();
-//  ArrayList<Position> positions  = new ArrayList<Position>();
   //-----
   ArrayList<Link> links  = new ArrayList<Link>();
 
@@ -116,13 +115,12 @@ class Layer {
   void draw() {
     particleSystem.tick();
     rebuildCoordinatesFromSystem();
-    for (int i=0; i< links.size (); i++) {
-      Link link = links.get(i);
+    for (Link link : links){
       int i1 = ids.get(link.id1);
       int i2 = ids.get(link.id2);
 
-      Slot slot1= getSlot1(links.get(i));
-      Slot slot2= getSlot2(links.get(i));
+      Slot slot1= getSlot1(link);
+      Slot slot2= getSlot2(link);
 
       stroke(linkColor);
       strokeWeight(2);
