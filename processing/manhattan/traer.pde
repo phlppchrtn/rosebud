@@ -74,7 +74,7 @@ public class Attraction implements Force {
     return b;
   }
 
-  public void apply()  { 
+  public void apply() { 
     if ( on && ( one.isFree() || b.isFree() ) ) {
       PVector a2b = PVector.sub(one.position, b.position, new PVector());
       float a2bDistanceSquared = a2b.dot(a2b);
@@ -82,7 +82,7 @@ public class Attraction implements Force {
       if ( a2bDistanceSquared < distanceMinSquared )
         a2bDistanceSquared = distanceMinSquared;
 
-      float force = k * one.mass0 * b.mass0 / (a2bDistanceSquared * (float)Math.sqrt(a2bDistanceSquared));
+      float force = k * one.mass * b.mass / (a2bDistanceSquared * (float)Math.sqrt(a2bDistanceSquared));
 
       a2b.mult( force );
 
@@ -149,7 +149,7 @@ public class UniversalAttraction implements Force {
             float a2bDistanceSquared = a2b.dot(a2b);
             if ( a2bDistanceSquared < distanceMinSquared )
               a2bDistanceSquared = distanceMinSquared;
-            float force = k * a.mass0 * b.mass0 / (a2bDistanceSquared * (float)Math.sqrt(a2bDistanceSquared));
+            float force = k * a.mass * b.mass / (a2bDistanceSquared * (float)Math.sqrt(a2bDistanceSquared));
             a2b.mult( force );
 
             if ( b.isFree() ) b.force.add( a2b );  
@@ -234,7 +234,7 @@ public class EulerIntegrator implements Integrator {
 
     for ( Particle  p : s.particles) {
       if ( p.isFree() ) {
-        p.velocity.add( PVector.mult(p.force, t/p.mass0) );
+        p.velocity.add( PVector.mult(p.force, t/p.mass) );
         p.position.add( PVector.mult(p.velocity, t) );
       }
     }
@@ -282,14 +282,14 @@ public class ModifiedEulerIntegrator implements Integrator {
 
     for ( int i = 0; i < s.numberOfParticles (); i++ ) {
       Particle p = s.getParticle( i );
-      if ( p.isFree() ){ 
+      if ( p.isFree() ) { 
         // The following "was"s was the code in traer3a which appears to work in the IDE but not pjs
         // I couln't find the interface Carl used in the PVector documentation and have converted
         // the code to the documented interface. -mrn
 
         // was in traer3a: PVector.div(p.force, p.mass0, a);
         a.set(p.force.x, p.force.y, p.force.z);
-        a.div(p.mass0);
+        a.div(p.mass);
 
         //was in traer3a: p.position.add( PVector.mult(p.velocity, t, holder) );
         holder.set(p.velocity.x, p.velocity.y, p.velocity.z);
@@ -315,16 +315,16 @@ public class ModifiedEulerIntegrator implements Integrator {
 //===========================================================================================
 //package traer.physics;
 public class Particle {
-  PVector position = new PVector();
-  PVector velocity = new PVector();
-  PVector force = new PVector();
-  protected float    mass0;
-  protected float    age0 = 0;
-  protected boolean  dead0 = false;
-  boolean            fixed0 = false;
+  final float    mass;
+  final PVector position = new PVector();
+  final PVector velocity = new PVector();
+  final PVector force = new PVector();
+  protected float    age = 0;
+  protected boolean  dead = false;
+  boolean            fixed = false;
 
-  public Particle( float m ) { 
-    mass0 = m;
+  public Particle( float mass ) { 
+    this.mass = mass;
   }
 
   // @see traer.physics.AbstractParticle#distanceTo(traer.physics.Particle)
@@ -334,7 +334,7 @@ public class Particle {
 
   // @see traer.physics.AbstractParticle#makeFixed()
   public final Particle makeFixed() {
-    fixed0 = true;
+    fixed = true;
     velocity.set(0f, 0f, 0f);
     force.set(0f, 0f, 0f);
     return this;
@@ -342,38 +342,14 @@ public class Particle {
 
   // @see traer.physics.AbstractParticle#makeFree()
   public final Particle makeFree() {
-    fixed0 = false;
+    fixed = false;
     return this;
   }
 
 
   // @see traer.physics.AbstractParticle#isFree()
   public final boolean isFree() { 
-    return !fixed0;
-  }
-
-  // @see traer.physics.AbstractParticle#mass()
-  public final float mass() { 
-    return mass0;
-  }
-
-  // @see traer.physics.AbstractParticle#setMass(float)
-  public final void setMass( float m ) { 
-    mass0 = m;
-  }
-
-  // @see traer.physics.AbstractParticle#age()
-  public final float age() { 
-    return age0;
-  }
-
-  protected void reset() {
-    age0 = 0;
-    dead0 = false;
-    position.set(0f, 0f, 0f);
-    velocity.set(0f, 0f, 0f);
-    force.set(0f, 0f, 0f);
-    mass0 = 1f;
+    return !fixed;
   }
 } // Particle
 
@@ -481,8 +457,7 @@ public class ParticleSystem {
     pulses.add(pu);
   }
 
-  public final void clear()
-  {
+  public final void clear() {
     particles.clear();
     springs.clear();
     attractions.clear();
@@ -490,41 +465,34 @@ public class ParticleSystem {
     pulses.clear();
   }
 
-  public ParticleSystem( float g, float somedrag )
-  {
+  public ParticleSystem( float g, float somedrag ) {
     setGravity( 0f, g, 0f );
     drag = somedrag;
     integrator = new RungeKuttaIntegrator( this );
   }
 
-  public ParticleSystem( float gx, float gy, float gz, float somedrag )
-  {
+  public ParticleSystem( float gx, float gy, float gz, float somedrag ) {
     setGravity( gx, gy, gz );
     drag = somedrag;
     integrator = new RungeKuttaIntegrator( this );
   }
 
-  public ParticleSystem()
-  {
+  public ParticleSystem() {
     setGravity( 0f, ParticleSystem.DEFAULT_GRAVITY, 0f );
     drag = ParticleSystem.DEFAULT_DRAG;
     integrator = new RungeKuttaIntegrator( this );
   }
 
-  protected final void applyForces()
-  {
-    if ( gravity.mag() != 0f )
-    {
-      for ( Iterator i = particles.iterator (); i.hasNext(); )
-      {
+  protected final void applyForces() {
+    if ( gravity.mag() != 0f ) {
+      for ( Iterator i = particles.iterator (); i.hasNext(); ) {
         Particle p = (Particle)i.next();
         if (p.isFree()) p.force.add( gravity );
       }
     }
 
     PVector target = new PVector();
-    for ( Iterator i = particles.iterator (); i.hasNext(); )
-    {
+    for ( Iterator i = particles.iterator (); i.hasNext(); ) {
       Particle p = (Particle)i.next();
       if (p.isFree()) p.force.add( PVector.mult(p.velocity, -drag, target) );
     }
@@ -539,62 +507,61 @@ public class ParticleSystem {
     if ( forces.size()!=0 ) for ( Iterator i = forces.iterator (); i.hasNext(); ) ((Force)i.next()).apply();
   }
 
-  protected final void clearForces()
-  {
+  protected final void clearForces() {
     for (Particle particle : particles) {
       particle.force.set(0f, 0f, 0f);
     }
   }
 
-  public final int        numberOfParticles() { 
+  public final int numberOfParticles() { 
     return particles.size();
   }
-  public final int        numberOfSprings() { 
+  public final int numberOfSprings() { 
     return springs.size();
   }
-  public final int        numberOfAttractions() { 
+  public final int numberOfAttractions() { 
     return attractions.size();
   }
-  public final Particle   getParticle( int i ) { 
+  public final Particle getParticle( int i ) { 
     return (Particle)particles.get( i );
   }
-  public final Spring     getSpring( int i ) { 
+  public final Spring getSpring( int i ) { 
     return springs.get( i );
   }
   public final Attraction getAttraction( int i ) { 
     return (Attraction)attractions.get( i );
   }
-  public final void       addCustomForce( Force f ) { 
+  public final void addCustomForce( Force f ) { 
     customForces.add( f );
   }
-  public final int        numberOfCustomForces() { 
+  public final int numberOfCustomForces() { 
     return customForces.size();
   }
-  public final Force      getCustomForce( int i ) { 
+  public final Force getCustomForce( int i ) { 
     return (Force)customForces.get( i );
   }
-  public final Force      removeCustomForce( int i ) { 
+  public final Force removeCustomForce( int i ) { 
     return (Force)customForces.remove( i );
   }
-  public final void       removeParticle( int i ) { 
+  public final void removeParticle( int i ) { 
     particles.remove( i );
   } //mrn
-  public final void       removeParticle( Particle p ) { 
+  public final void removeParticle( Particle p ) { 
     particles.remove( p );
   }
-  public final Spring     removeSpring( int i ) { 
+  public final Spring removeSpring( int i ) { 
     return (Spring)springs.remove( i );
   }
   public final Attraction removeAttraction( int i ) { 
     return (Attraction)attractions.remove( i );
   }
-  public final void       removeAttraction( Attraction s ) { 
+  public final void removeAttraction( Attraction s ) { 
     attractions.remove( s );
   }
-  public final void       removeSpring( Spring a ) { 
+  public final void removeSpring( Spring a ) { 
     springs.remove( a );
   }
-  public final void       removeCustomForce( Force f ) { 
+  public final void removeCustomForce( Force f ) { 
     customForces.remove( f );
   }
 } // ParticleSystem
@@ -622,8 +589,7 @@ public class RungeKuttaIntegrator implements Integrator
     this.s = s;
   }
 
-  final void allocateParticles()
-  {
+  final void allocateParticles() {
     while ( s.particles.size () > originalPositions.size() ) {
       originalPositions.add( new PVector() );
       originalVelocities.add( new PVector() );
@@ -640,11 +606,9 @@ public class RungeKuttaIntegrator implements Integrator
 
   private final void setIntermediate(ArrayList forces, ArrayList velocities) {
     s.applyForces();
-    for ( int i = 0; i < s.particles.size (); ++i )
-    {
+    for ( int i = 0; i < s.particles.size (); ++i ) {
       Particle p = (Particle)s.particles.get( i );
-      if ( p.isFree() )
-      {
+      if ( p.isFree() ) {
         ((PVector)forces.get( i )).set( p.force.x, p.force.y, p.force.z );
         ((PVector)velocities.get( i )).set( p.velocity.x, p.velocity.y, p.velocity.z );
         p.force.set(0f, 0f, 0f);
@@ -655,27 +619,23 @@ public class RungeKuttaIntegrator implements Integrator
   private final void updateIntermediate(ArrayList forces, ArrayList velocities, float multiplier) {
     PVector holder = new PVector();
 
-    for ( int i = 0; i < s.particles.size (); ++i )
-    {
+    for ( int i = 0; i < s.particles.size (); ++i ) {
       Particle p = (Particle)s.particles.get( i );
-      if ( p.isFree() )
-      {
+      if ( p.isFree() ) {
         PVector op = (PVector)(originalPositions.get( i ));
         p.position.set(op.x, op.y, op.z);
         p.position.add(PVector.mult((PVector)(velocities.get( i )), multiplier, holder));    
         PVector ov = (PVector)(originalVelocities.get( i ));
         p.velocity.set(ov.x, ov.y, ov.z);
-        p.velocity.add(PVector.mult((PVector)(forces.get( i )), multiplier/p.mass0, holder));
+        p.velocity.add(PVector.mult((PVector)(forces.get( i )), multiplier/p.mass, holder));
       }
     }
   }
 
   private final void initialize() {
-    for ( int i = 0; i < s.particles.size (); ++i )
-    {
+    for ( int i = 0; i < s.particles.size (); ++i ) {
       Particle p = (Particle)(s.particles.get( i ));
-      if ( p.isFree() )
-      {    
+      if ( p.isFree() ) {    
         ((PVector)(originalPositions.get( i ))).set( p.position.x, p.position.y, p.position.z );
         ((PVector)(originalVelocities.get( i ))).set( p.velocity.x, p.velocity.y, p.velocity.z );
       }
@@ -683,8 +643,7 @@ public class RungeKuttaIntegrator implements Integrator
     }
   }
 
-  public final void step( float deltaT )
-  {  
+  public final void step( float deltaT ) {  
     allocateParticles();
     initialize();       
     setIntermediate(k1Forces, k1Velocities);
@@ -697,12 +656,10 @@ public class RungeKuttaIntegrator implements Integrator
 
     /////////////////////////////////////////////////////////////
     // put them all together and what do you get?
-    for ( int i = 0; i < s.particles.size (); ++i )
-    {
+    for ( int i = 0; i < s.particles.size (); ++i ) {
       Particle p = (Particle)s.particles.get( i );
-      p.age0 += deltaT;
-      if ( p.isFree() )
-      {
+      p.age += deltaT;
+      if ( p.isFree() ) {
         // update position
         PVector holder = (PVector)(k2Velocities.get( i ));
         holder.add((PVector)k3Velocities.get( i ));
@@ -719,7 +676,7 @@ public class RungeKuttaIntegrator implements Integrator
         holder.mult(2.0f);
         holder.add((PVector)k1Forces.get( i ));
         holder.add((PVector)k4Forces.get( i ));
-        holder.mult(deltaT / (6.0f * p.mass0 ));
+        holder.mult(deltaT / (6.0f * p.mass ));
         holder.add((PVector)originalVelocities.get( i ));
         p.velocity.set(holder.x, holder.y, holder.z);
       }
@@ -733,8 +690,7 @@ public class RungeKuttaIntegrator implements Integrator
 // May 29, 2005
 //package traer.physics;
 // @author jeffrey traer bernstein
-public class Spring implements Force
-{
+public final class Spring implements Force {
   final float springConstant0;
   final float damping0;
   final float restLength0;
@@ -751,39 +707,37 @@ public class Spring implements Force
     b = B;
   }
 
-  public final void     turnOff() { 
+  public  void     turnOff() { 
     on = false;
   }
-  public final void     turnOn() { 
+  public void     turnOn() { 
     on = true;
   }
-  public final boolean  isOn() { 
+  public  boolean  isOn() { 
     return on;
   }
-  public final Particle getOneEnd() { 
+  public Particle getOneEnd() { 
     return one;
   }
-  public final Particle getTheOtherEnd() { 
+  public Particle getTheOtherEnd() { 
     return b;
   }
-  public final float    currentLength() { 
+  public float    currentLength() { 
     return one.distanceTo( b );
   }
-  public final float    restLength() { 
+  public float    restLength() { 
     return restLength0;
   }
-  public final float    strength() { 
+  public float    strength() { 
     return springConstant0;
   }
 
-  public final float    damping() { 
+  public float    damping() { 
     return damping0;
   }
 
-  public final void apply()
-  {  
-    if ( on && ( one.isFree() || b.isFree() ) )
-    {
+  public final void apply() {  
+    if ( on && ( one.isFree() || b.isFree() ) ) {
       PVector a2b = PVector.sub(one.position, b.position, new PVector());
 
       float a2bDistance = a2b.mag();  
@@ -816,8 +770,7 @@ public class Spring implements Force
 //                                       Smoother
 //===========================================================================================
 //package traer.animator;
-public class Smoother implements Tickable
-{
+public class Smoother implements Tickable {
   public float a, gain, lastOutput, input;
 
   public Smoother(float smoothness) { 
@@ -854,17 +807,14 @@ public class Smoother implements Tickable
 //                                      Smoother3D
 //===========================================================================================
 //package traer.animator;
-public class Smoother3D implements Tickable
-{
+public class Smoother3D implements Tickable {
   public Smoother x0, y0, z0;
-  public Smoother3D(float smoothness)
-  {
+  public Smoother3D(float smoothness) {
     x0 = new Smoother(smoothness);
     y0 = new Smoother(smoothness);
     z0 = new Smoother(smoothness);
   }
-  public Smoother3D(float initialX, float initialY, float initialZ, float smoothness)
-  {
+  public Smoother3D(float initialX, float initialY, float initialZ, float smoothness) {
     x0 = new Smoother(smoothness, initialX);
     y0 = new Smoother(smoothness, initialY);
     z0 = new Smoother(smoothness, initialZ);
@@ -887,14 +837,12 @@ public class Smoother3D implements Tickable
   public final float getZTarget() { 
     return z0.getTarget();
   }
-  public final void setTarget(float X, float Y, float Z)
-  {
+  public final void setTarget(float X, float Y, float Z) {
     x0.setTarget(X);
     y0.setTarget(Y);
     z0.setTarget(Z);
   }
-  public final void setValue(float X, float Y, float Z)
-  {
+  public final void setValue(float X, float Y, float Z) {
     x0.setValue(X);
     y0.setValue(Y);
     z0.setValue(Z);
@@ -908,8 +856,7 @@ public class Smoother3D implements Tickable
   public final void setZ(float Z) { 
     z0.setValue(Z);
   }
-  public final void setSmoothness(float smoothness)
-  {
+  public final void setSmoothness(float smoothness) {
     x0.setSmoothness(smoothness);
     y0.setSmoothness(smoothness);
     z0.setSmoothness(smoothness);
@@ -934,8 +881,7 @@ public class Smoother3D implements Tickable
 //                                      Tickable
 //===========================================================================================
 //package traer.animator;
-public interface Tickable
-{
+public interface Tickable {
   void tick();
   void setSmoothness(float f);
 } // Tickable
