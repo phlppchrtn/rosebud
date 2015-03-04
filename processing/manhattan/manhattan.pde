@@ -1,5 +1,5 @@
 
-final float ATTRACTION_STRENGTH = 0.7;  
+final float ATTRACTION_STRENGTH = + 0.7;  
 final float ATTRACTION_MIN_DISTANCE = 1;
 
 final float SPRING_STRENGTH = 0.1;
@@ -68,7 +68,6 @@ class Layer {
   HashMap<String, Integer> ids = new HashMap<String, Integer>();
   ArrayList<Particle> particles = new  ArrayList<Particle>();
   ArrayList<Shape> shapes = new ArrayList<Shape>();
-  ArrayList<String> labels  = new ArrayList<String>();
   ArrayList<Position> positions  = new ArrayList<Position>();
   //-----
   ArrayList<Link> links  = new ArrayList<Link>();
@@ -120,16 +119,20 @@ class Layer {
     particleSystem.makeAttraction(a, b, -ATTRACTION_STRENGTH, ATTRACTION_MIN_DISTANCE );
   }
 
-  void addShape(String id, String shapeType, String label, float x, float y) {
+  float xx = 10;
+  float  yy = 10;
+
+  void addShape(String id, String shapeType, String label, float xj, float yj) {
+    float x = xx++;
+    float y = yy++;
     Shape shape;
     if ("box".equals(shapeType)) {
-      shape = new Box(100, 100);
+      shape = new Box(100, 100, label);
     }
     else {
       throw new RuntimeException ("Unknown shape type "+ shapeType);
     }
     ids.put(id, ids.size());
-    labels.add(label);
     shapes.add(shape);
     positions.add(new Position(x, y));
     //-----
@@ -180,10 +183,8 @@ class Layer {
     }
   }
   void draw() {
-    if (! mousePressed){ 
-      particleSystem.tick();
-      rebuildCoordinatesFromSystem();
-    }
+    particleSystem.tick();
+    rebuildCoordinatesFromSystem();
     for (int i=0; i< links.size (); i++) {
       Link link = links.get(i);
       int i1 = ids.get(link.id1);
@@ -220,7 +221,7 @@ class Layer {
         noStroke();
       }
       //-----
-      shapes.get(i).draw(positions.get(i), labels.get(i));
+      shapes.get(i).draw(positions.get(i));
     }
   }
 }
@@ -234,7 +235,7 @@ class Position {
 }
 
 interface Shape {
-  void draw(Position position, String label);
+  void draw(Position position);
   //relative
   boolean inside(float x, float y);
 
@@ -242,13 +243,15 @@ interface Shape {
 }
 
 class Box implements  Shape {
+  String label;
   int w, h;
-  Box (int w, int h) {
+  Box (int w, int h, String label) {
     this.w = w; 
     this.h = h;
+    this.label = label;
   } 
 
-  void draw(Position position, String label) {
+  void draw(Position position) {
     rect (position.x, position.y, w, h);
     fill(textColor);
     text (label, position.x+5, position.y + 15);
