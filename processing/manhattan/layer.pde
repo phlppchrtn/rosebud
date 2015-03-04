@@ -45,10 +45,13 @@ class Layer {
   }
 
   void addLink(String id1, String id2) {
-    links.add(new Link(id1, id2));
+    int i1 = ids.get(id1);
+    int i2 = ids.get(id2);
+
+    links.add(new Link(shapes.get(i1), shapes.get(i2)));
     //-----
-    Particle a = particles.get(ids.get(id1));
-    Particle b = particles.get(ids.get(id2));
+    Particle a = particles.get(i1);
+    Particle b = particles.get(i2);
     particleSystem.makeAttraction(a, b, -ATTRACTION_STRENGTH, ATTRACTION_MIN_DISTANCE );
   }
 
@@ -68,25 +71,6 @@ class Layer {
     particles.add(particle);
   }
 
-  Slot getSlot1(Link link) {
-    int i1 = ids.get(link.id1);
-    int i2 = ids.get(link.id2);
-
-    Shape shape1 = shapes.get(i1);
-    Shape shape2 = shapes.get(i2);
-    
-    return shape1.findSlot(shape2);
-  }
-
-  Slot getSlot2(Link link) {
-    int i1 = ids.get(link.id1);
-    int i2 = ids.get(link.id2);
-
-    Shape shape1 = shapes.get(i1);
-    Shape shape2 = shapes.get(i2);
-    
-    return shape2.findSlot(shape1);
-  }
 
   void rebuildCoordinatesFromSystem() {
     for (int i = 0; i<particles.size(); i++) {  
@@ -114,17 +98,14 @@ class Layer {
     particleSystem.tick();
     rebuildCoordinatesFromSystem();
     for (Link link : links){
-      int i1 = ids.get(link.id1);
-      int i2 = ids.get(link.id2);
-
-      Slot slot1= getSlot1(link);
-      Slot slot2= getSlot2(link);
+      Slot slot1= link.shape1.findSlot(link.shape2);
+      Slot slot2= link.shape2.findSlot(link.shape1);
 
       stroke(linkColor);
       strokeWeight(2);
       noFill();
-      Position position1 = shapes.get(i1).getPosition();
-      Position position2 = shapes.get(i2).getPosition();
+      Position position1 = link.shape1.getPosition();
+      Position position2 = link.shape2.getPosition();
       bezier (position1.x + slot1.x, position1.y + slot1.y, position1.x + slot1.x + slot1.vx, position1.y + slot1.y + slot1.vy, 
       position2.x + slot2.x + slot2.vx, position2.y + slot2.y + slot2.vy, position2.x + slot2.x, position2.y + slot2.y );        
 

@@ -42,14 +42,7 @@ void draw() {
   layer.draw();
 }
 
-class Link {
-  String id1;
-  String id2;
-  Link(String id1, String id2) {
-    this.id1 = id1;
-    this.id2 = id2;
-  }
-}
+
 
 class Slot {
   float x, y;
@@ -61,7 +54,6 @@ class Slot {
     this.vy = vy;
   }
 }
-
 
 void mouseMoved() {
   layer.overShape(mouseX, mouseY);
