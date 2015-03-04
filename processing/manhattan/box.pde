@@ -1,20 +1,25 @@
 class Box implements  Shape {
-  String label;
+  Position position;
   int w, h;
-  Box (int w, int h, String label) {
+  String label;
+  Box (Position position, int w, int h, String label) {
+    this.position = position;  
     this.w = w; 
     this.h = h;
     this.label = label;
   } 
 
-  void draw(Position position) {
+  Position getPosition (){
+    return position;
+  }
+  void draw() {
     rect (position.x, position.y, w, h);
     fill(textColor);
     text (label, position.x+5, position.y + 15);
   }
 
   boolean inside(float x, float y) {
-    return x>0 && x<w && y>0 && y<h;
+    return x>position.x && x<(position.x+w) && y>position.y && y<(position.y+h);
   }
 
   Slot findSlot(float x, float y) {
