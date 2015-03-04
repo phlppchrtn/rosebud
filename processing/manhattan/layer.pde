@@ -11,7 +11,6 @@ class Layer {
   //-----
   Shape selectedShape;
   int selectMouseX, selectMouseY; 
-  int selectIndex;
   //-----
 
   void moveShape(int x, int y) {
@@ -33,7 +32,6 @@ class Layer {
     if (selectedShape != null) {
       selectMouseX = x;
       selectMouseY = y;
-      selectIndex = shapes.indexOf(selectedShape);
     }
   }  
 
@@ -73,21 +71,21 @@ class Layer {
   Slot getSlot1(Link link) {
     int i1 = ids.get(link.id1);
     int i2 = ids.get(link.id2);
-    Position position1 = shapes.get(i1).getPosition();
-    Position position2 = shapes.get(i2).getPosition();
 
-    Shape shape = shapes.get(i1);
-    return shape.findSlot(-position1.x + position2.x, - position1.y + position2.y);
+    Shape shape1 = shapes.get(i1);
+    Shape shape2 = shapes.get(i2);
+    
+    return shape1.findSlot(shape2);
   }
 
   Slot getSlot2(Link link) {
     int i1 = ids.get(link.id1);
     int i2 = ids.get(link.id2);
-    Position position1 = shapes.get(i1).getPosition();
-    Position position2 = shapes.get(i2).getPosition();
 
-    Shape shape = shapes.get(i2);
-    return shape.findSlot(position1.x - position2.x, position1.y - position2.y);
+    Shape shape1 = shapes.get(i1);
+    Shape shape2 = shapes.get(i2);
+    
+    return shape2.findSlot(shape1);
   }
 
   void rebuildCoordinatesFromSystem() {

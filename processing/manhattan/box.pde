@@ -22,7 +22,10 @@ class Box implements  Shape {
     return x>position.x && x<(position.x+w) && y>position.y && y<(position.y+h);
   }
 
-  Slot findSlot(float x, float y) {
+  Slot findSlot(Shape shape2) {
+     float x = shape2.getPosition().x - position.x;
+     float y = shape2.getPosition().y  - position.y;
+    
     float d = sqrt(x*x + y*y);
 
     if ( x>d/2) {
