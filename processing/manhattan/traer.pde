@@ -67,12 +67,7 @@ public class Attraction implements Force {
   public final void     turnOn() { 
     on = true;
   }
-  public final Particle getOneEnd() { 
-    return one;
-  }
-  public final Particle getTheOtherEnd() { 
-    return b;
-  }
+
 
   public void apply() { 
     if ( on && ( one.isFree() || b.isFree() ) ) {
@@ -111,11 +106,11 @@ public class Attraction implements Force {
 public class UniversalAttraction implements Force {
   final float k;
   final float distanceMin;
-  final ArrayList targetList;
+  final ArrayList<Particle> targetList;
   final float distanceMinSquared;
   boolean on = true;
 
-  public UniversalAttraction( float k, float distanceMin, ArrayList targetList ) {
+  public UniversalAttraction( float k, float distanceMin, ArrayList<Particle> targetList ) {
     this.k = k;
     this.distanceMin = distanceMin;
     this.distanceMinSquared = distanceMin*distanceMin;
@@ -142,17 +137,20 @@ public class UniversalAttraction implements Force {
     if ( on ) {
       for (int i=0; i < targetList.size (); i++ ) {
         for (int j=i+1; j < targetList.size (); j++) {
-          Particle a = (Particle)targetList.get(i);
-          Particle b = (Particle)targetList.get(j);
+          Particle a = targetList.get(i);
+          Particle b = targetList.get(j);
           if ( a.isFree() || b.isFree() ) {
             PVector a2b = PVector.sub(a.position, b.position, new PVector());
             float a2bDistanceSquared = a2b.dot(a2b);
-            if ( a2bDistanceSquared < distanceMinSquared )
+            if ( a2bDistanceSquared < distanceMinSquared ) {
               a2bDistanceSquared = distanceMinSquared;
+            }  
             float force = k * a.mass * b.mass / (a2bDistanceSquared * (float)Math.sqrt(a2bDistanceSquared));
             a2b.mult( force );
 
-            if ( b.isFree() ) b.force.add( a2b );  
+            if ( b.isFree() ) {
+              b.force.add( a2b );
+            } 
             if ( a.isFree() ) {
               a2b.mult(-1f);
               a.force.add( a2b );
@@ -366,8 +364,8 @@ public class ParticleSystem {
   protected static final float DEFAULT_DRAG = 0.001f;  
   final ArrayList<Particle>  particles = new ArrayList<Particle>();
   final ArrayList<Spring>  springs = new ArrayList<Spring>();
-  final ArrayList  attractions = new ArrayList();
-  final ArrayList  customForces = new ArrayList();
+  final ArrayList<Attraction>  attractions = new ArrayList();
+  final ArrayList<Force>  customForces = new ArrayList();
   final ArrayList<Pulse>  pulses = new ArrayList<Pulse>();
   Integrator integrator;
   PVector    gravity = new PVector();
@@ -423,10 +421,6 @@ public class ParticleSystem {
     return p;
   }
 
-  public final int makeParticle2( float mass, float x, float y, float z ) { // mrn
-    makeParticle(mass, x, y, z);
-    return particles.size()-1;
-  }
 
   public final Particle makeParticle() { 
     return makeParticle( 1.0f, 0f, 0f, 0f );
@@ -442,11 +436,6 @@ public class ParticleSystem {
     Attraction m = new Attraction( first, b, k, minDistance );
     attractions.add( m );
     return m;
-  }
-
-  public final int makeAttraction2( Particle a, Particle b, float k, float minDistance ) { // mrn
-    makeAttraction(a, b, k, minDistance);
-    return attractions.size()-1; // return the index
   }
 
   public final void replaceAttraction( int i, Attraction m ) { // mrn
@@ -503,8 +492,10 @@ public class ParticleSystem {
     applyAll(pulses);
   }
 
-  private void applyAll(ArrayList forces) {
-    if ( forces.size()!=0 ) for ( Iterator i = forces.iterator (); i.hasNext(); ) ((Force)i.next()).apply();
+  private void applyAll(ArrayList<? extends Force> forces) {
+    for ( Force force : forces) {
+      force.apply();
+    }
   }
 
   protected final void clearForces() {
@@ -523,13 +514,13 @@ public class ParticleSystem {
     return attractions.size();
   }
   public final Particle getParticle( int i ) { 
-    return (Particle)particles.get( i );
+    return particles.get( i );
   }
   public final Spring getSpring( int i ) { 
     return springs.get( i );
   }
   public final Attraction getAttraction( int i ) { 
-    return (Attraction)attractions.get( i );
+    return attractions.get( i );
   }
   public final void addCustomForce( Force f ) { 
     customForces.add( f );
@@ -538,10 +529,10 @@ public class ParticleSystem {
     return customForces.size();
   }
   public final Force getCustomForce( int i ) { 
-    return (Force)customForces.get( i );
+    return customForces.get( i );
   }
   public final Force removeCustomForce( int i ) { 
-    return (Force)customForces.remove( i );
+    return customForces.remove( i );
   }
   public final void removeParticle( int i ) { 
     particles.remove( i );
@@ -550,10 +541,10 @@ public class ParticleSystem {
     particles.remove( p );
   }
   public final Spring removeSpring( int i ) { 
-    return (Spring)springs.remove( i );
+    return springs.remove( i );
   }
   public final Attraction removeAttraction( int i ) { 
-    return (Attraction)attractions.remove( i );
+    return attractions.remove( i );
   }
   public final void removeAttraction( Attraction s ) { 
     attractions.remove( s );
@@ -573,17 +564,17 @@ public class ParticleSystem {
 //import java.util.*;
 public class RungeKuttaIntegrator implements Integrator
 {  
-  ArrayList originalPositions = new ArrayList();
-  ArrayList originalVelocities = new ArrayList();
-  ArrayList k1Forces = new ArrayList();
-  ArrayList k1Velocities = new ArrayList();
-  ArrayList k2Forces = new ArrayList();
-  ArrayList k2Velocities = new ArrayList();
-  ArrayList k3Forces = new ArrayList();
-  ArrayList k3Velocities = new ArrayList();
-  ArrayList k4Forces = new ArrayList();
-  ArrayList k4Velocities = new ArrayList();
-  ParticleSystem s;
+  final ArrayList<PVector> originalPositions = new ArrayList();
+  final ArrayList<PVector> originalVelocities = new ArrayList();
+  final ArrayList<PVector> k1Forces = new ArrayList();
+  final ArrayList<PVector> k1Velocities = new ArrayList();
+  final ArrayList<PVector> k2Forces = new ArrayList();
+  final ArrayList<PVector> k2Velocities = new ArrayList();
+  final ArrayList<PVector> k3Forces = new ArrayList();
+  final ArrayList<PVector> k3Velocities = new ArrayList();
+  final ArrayList<PVector> k4Forces = new ArrayList();
+  final ArrayList<PVector> k4Velocities = new ArrayList();
+  final ParticleSystem s;
 
   public RungeKuttaIntegrator( ParticleSystem s ) { 
     this.s = s;
@@ -604,40 +595,40 @@ public class RungeKuttaIntegrator implements Integrator
     }
   }
 
-  private final void setIntermediate(ArrayList forces, ArrayList velocities) {
+  private final void setIntermediate(ArrayList<PVector> forces, ArrayList<PVector> velocities) {
     s.applyForces();
     for ( int i = 0; i < s.particles.size (); ++i ) {
       Particle p = (Particle)s.particles.get( i );
       if ( p.isFree() ) {
-        ((PVector)forces.get( i )).set( p.force.x, p.force.y, p.force.z );
-        ((PVector)velocities.get( i )).set( p.velocity.x, p.velocity.y, p.velocity.z );
+        forces.get(i).set( p.force.x, p.force.y, p.force.z );
+        velocities.get(i).set( p.velocity.x, p.velocity.y, p.velocity.z );
         p.force.set(0f, 0f, 0f);
       }
     }
   }
 
-  private final void updateIntermediate(ArrayList forces, ArrayList velocities, float multiplier) {
+  private final void updateIntermediate(ArrayList<PVector> forces, ArrayList<PVector> velocities, float multiplier) {
     PVector holder = new PVector();
 
     for ( int i = 0; i < s.particles.size (); ++i ) {
-      Particle p = (Particle)s.particles.get( i );
+      Particle p = s.particles.get(i);
       if ( p.isFree() ) {
-        PVector op = (PVector)(originalPositions.get( i ));
+        PVector op = originalPositions.get(i);
         p.position.set(op.x, op.y, op.z);
-        p.position.add(PVector.mult((PVector)(velocities.get( i )), multiplier, holder));    
-        PVector ov = (PVector)(originalVelocities.get( i ));
+        p.position.add(PVector.mult(velocities.get(i), multiplier, holder));    
+        PVector ov = originalVelocities.get(i);
         p.velocity.set(ov.x, ov.y, ov.z);
-        p.velocity.add(PVector.mult((PVector)(forces.get( i )), multiplier/p.mass, holder));
+        p.velocity.add(PVector.mult(forces.get(i), multiplier/p.mass, holder));
       }
     }
   }
 
   private final void initialize() {
     for ( int i = 0; i < s.particles.size (); ++i ) {
-      Particle p = (Particle)(s.particles.get( i ));
+      Particle p = s.particles.get(i);
       if ( p.isFree() ) {    
-        ((PVector)(originalPositions.get( i ))).set( p.position.x, p.position.y, p.position.z );
-        ((PVector)(originalVelocities.get( i ))).set( p.velocity.x, p.velocity.y, p.velocity.z );
+        originalPositions.get(i).set( p.position.x, p.position.y, p.position.z );
+        originalVelocities.get(i).set( p.velocity.x, p.velocity.y, p.velocity.z );
       }
       p.force.set(0f, 0f, 0f);  // and clear the forces
     }
@@ -661,23 +652,23 @@ public class RungeKuttaIntegrator implements Integrator
       p.age += deltaT;
       if ( p.isFree() ) {
         // update position
-        PVector holder = (PVector)(k2Velocities.get( i ));
-        holder.add((PVector)k3Velocities.get( i ));
+        PVector holder = k2Velocities.get(i);
+        holder.add(k3Velocities.get(i));
         holder.mult(2.0f);
-        holder.add((PVector)k1Velocities.get( i ));
-        holder.add((PVector)k4Velocities.get( i ));
+        holder.add(k1Velocities.get(i));
+        holder.add(k4Velocities.get(i));
         holder.mult(deltaT / 6.0f);
-        holder.add((PVector)originalPositions.get( i ));
+        holder.add(originalPositions.get(i));
         p.position.set(holder.x, holder.y, holder.z);
 
         // update velocity
-        holder = (PVector)k2Forces.get( i );
-        holder.add((PVector)k3Forces.get( i ));
+        holder = k2Forces.get( i );
+        holder.add(k3Forces.get( i ));
         holder.mult(2.0f);
-        holder.add((PVector)k1Forces.get( i ));
-        holder.add((PVector)k4Forces.get( i ));
+        holder.add(k1Forces.get( i ));
+        holder.add(k4Forces.get( i ));
         holder.mult(deltaT / (6.0f * p.mass ));
-        holder.add((PVector)originalVelocities.get( i ));
+        holder.add(originalVelocities.get( i ));
         p.velocity.set(holder.x, holder.y, holder.z);
       }
     }
@@ -692,17 +683,17 @@ public class RungeKuttaIntegrator implements Integrator
 // @author jeffrey traer bernstein
 public final class Spring implements Force {
   final float springConstant0;
-  final float damping0;
-  final float restLength0;
+  final float damping;
+  final float restLength;
   final Particle one;
   final Particle b;
   boolean on = true;
 
-  public Spring( Particle A, Particle B, float ks, float d, float r )
+  public Spring( Particle A, Particle B, float ks, float damping, float restLength )
   {
     springConstant0 = ks;
-    damping0 = d;
-    restLength0 = r;
+    this.damping = damping;
+    this.restLength = restLength;
     one = A;
     b = B;
   }
@@ -716,25 +707,15 @@ public final class Spring implements Force {
   public  boolean  isOn() { 
     return on;
   }
-  public Particle getOneEnd() { 
-    return one;
-  }
-  public Particle getTheOtherEnd() { 
-    return b;
-  }
+
   public float    currentLength() { 
     return one.distanceTo( b );
   }
-  public float    restLength() { 
-    return restLength0;
-  }
+
   public float    strength() { 
     return springConstant0;
   }
 
-  public float    damping() { 
-    return damping0;
-  }
 
   public final void apply() {  
     if ( on && ( one.isFree() || b.isFree() ) ) {
@@ -747,21 +728,23 @@ public final class Spring implements Force {
       }
 
       // spring force is proportional to how much it stretched 
-      float springForce = -( a2bDistance - restLength0 ) * springConstant0; 
+      float springForce = -( a2bDistance - restLength ) * springConstant0; 
 
       PVector vDamping = PVector.sub(one.velocity, b.velocity, new PVector());
 
-      float dampingForce = -damping0 * a2b.dot(vDamping);
+      float dampingForce = -damping * a2b.dot(vDamping);
 
       // forceB is same as forceA in opposite direction
       float r = springForce + dampingForce;
 
       a2b.mult(r);
 
-      if ( one.isFree() )
+      if ( one.isFree() ) {
         one.force.add( a2b );
-      if ( b.isFree() )
+      }
+      if ( b.isFree() ) {
         b.force.add( PVector.mult(a2b, -1, a2b) );
+      }
     }
   }
 } // Spring
@@ -771,34 +754,36 @@ public final class Spring implements Force {
 //===========================================================================================
 //package traer.animator;
 public class Smoother implements Tickable {
-  public float a, gain, lastOutput, input;
+  public float a;
+  public float gain;
+  public float lastOutput;
+  public float input;
 
   public Smoother(float smoothness) { 
-    setSmoothness(smoothness);  
-    setValue(0.0F);
+    this(smoothness, 0.0F);
   }
   public Smoother(float smoothness, float start) { 
     setSmoothness(smoothness); 
     setValue(start);
   }
-  public final void     setSmoothness(float smoothness) { 
+  public final void setSmoothness(float smoothness) { 
     a = -smoothness; 
     gain = 1.0F + a;
   }
-  public final void     setTarget(float target) { 
+  public final void setTarget(float target) { 
     input = target;
   }
-  public void           setValue(float x) { 
+  public void setValue(float x) { 
     input = x; 
     lastOutput = x;
   }
-  public final float    getTarget() { 
+  public final float getTarget() { 
     return input;
   }
-  public final void     tick() { 
+  public final void tick() { 
     lastOutput = gain * input - a * lastOutput;
   }
-  public final float    getValue() { 
+  public final float getValue() { 
     return lastOutput;
   }
 } // Smoother
@@ -828,15 +813,7 @@ public class Smoother3D implements Tickable {
   public final void setZTarget(float X) { 
     z0.setTarget(X);
   }
-  public final float getXTarget() { 
-    return x0.getTarget();
-  }
-  public final float getYTarget() { 
-    return y0.getTarget();
-  }
-  public final float getZTarget() { 
-    return z0.getTarget();
-  }
+
   public final void setTarget(float X, float Y, float Z) {
     x0.setTarget(X);
     y0.setTarget(Y);
