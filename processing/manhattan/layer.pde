@@ -3,7 +3,7 @@ class Layer {
   private final ArrayList<Shape> shapes;
   private final ArrayList<Link> links;
 
-  private Shape overShape;
+  private Shape highlightedShape;
   //-----
   private Shape selectedShape;
   private int selectMouseX, selectMouseY; 
@@ -47,7 +47,7 @@ class Layer {
   }
 
   public void overShape (int x, int y) {
-    overShape  = find(x, y);
+    highlightedShape  = find(x, y);
   }  
 
   public void unselectShape () {

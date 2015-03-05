@@ -74,9 +74,10 @@ public class Attraction implements Force {
       PVector a2b = PVector.sub(one.position, b.position, new PVector());
       float a2bDistanceSquared = a2b.dot(a2b);
 
-      if ( a2bDistanceSquared < distanceMinSquared )
+      if ( a2bDistanceSquared < distanceMinSquared ){
         a2bDistanceSquared = distanceMinSquared;
-
+      }
+      
       float force = k * one.mass * b.mass / (a2bDistanceSquared * (float)Math.sqrt(a2bDistanceSquared));
 
       a2b.mult( force );
@@ -278,8 +279,7 @@ public class ModifiedEulerIntegrator implements Integrator {
     PVector a = new PVector();
     PVector holder = new PVector();
 
-    for ( int i = 0; i < s.numberOfParticles (); i++ ) {
-      Particle p = s.getParticle( i );
+    for (Particle p :s.particles) {
       if ( p.isFree() ) { 
         // The following "was"s was the code in traer3a which appears to work in the IDE but not pjs
         // I couln't find the interface Carl used in the PVector documentation and have converted
@@ -317,9 +317,9 @@ public class Particle {
   final PVector position = new PVector();
   final PVector velocity = new PVector();
   final PVector force = new PVector();
-  protected float    age = 0;
-  protected boolean  dead = false;
-  boolean            fixed = false;
+  protected float age = 0;
+  protected boolean dead = false;
+  boolean fixed = false;
 
   public Particle( float mass ) { 
     this.mass = mass;
@@ -367,18 +367,16 @@ public class ParticleSystem {
   final ArrayList<Attraction>  attractions = new ArrayList();
   final ArrayList<Force>  customForces = new ArrayList();
   final ArrayList<Pulse>  pulses = new ArrayList<Pulse>();
+  final PVector    gravity = new PVector();
   Integrator integrator;
-  PVector    gravity = new PVector();
   float      drag;
   boolean    hasDeadParticles = false;
 
   public final void setIntegrator( int which ) {
     if ( which==RUNGE_KUTTA ) {
       this.integrator = new RungeKuttaIntegrator( this );
-    } else {
-      if ( which==MODIFIED_EULER ) {
+    } else if ( which==MODIFIED_EULER ) {
         this.integrator = new ModifiedEulerIntegrator( this );
-      }
     }
   }
 
@@ -403,12 +401,13 @@ public class ParticleSystem {
       p.tick(t);
       if (p.isOn()) { 
         i++;
-      } else { 
+      } 
+      else { 
         pulses.remove(i);
       }
     }
-    for (Iterator i = pulses.iterator (); i.hasNext(); ) {
-      Pulse p = (Pulse)(i.next());
+    for (Iterator<Pulse> i = pulses.iterator (); i.hasNext(); ) {
+      Pulse p = i.next();
       p.tick( t );
       if (!p.isOn()) i.remove();
     }
@@ -598,7 +597,7 @@ public class RungeKuttaIntegrator implements Integrator
   private final void setIntermediate(ArrayList<PVector> forces, ArrayList<PVector> velocities) {
     s.applyForces();
     for ( int i = 0; i < s.particles.size (); ++i ) {
-      Particle p = (Particle)s.particles.get( i );
+      Particle p = s.particles.get( i );
       if ( p.isFree() ) {
         forces.get(i).set( p.force.x, p.force.y, p.force.z );
         velocities.get(i).set( p.velocity.x, p.velocity.y, p.velocity.z );
@@ -689,8 +688,7 @@ public final class Spring implements Force {
   final Particle b;
   boolean on = true;
 
-  public Spring( Particle A, Particle B, float ks, float damping, float restLength )
-  {
+  public Spring( Particle A, Particle B, float ks, float damping, float restLength ) {
     springConstant0 = ks;
     this.damping = damping;
     this.restLength = restLength;
