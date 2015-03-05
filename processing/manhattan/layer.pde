@@ -41,10 +41,10 @@ class Layer {
     //-----Springs    
     for (int i=0; i< shapes.size (); i++) { 
       Particle a = shapes.get(i).getParticle();
-        particleSystem.makeSpring(a, north, SPRING_STRENGTH/500, SPRING_DAMPING/10, SPRING_REST_LENGTH/10);
-      //  particleSystem.makeSpring(a, south, SPRING_STRENGTH/500, SPRING_DAMPING/10, SPRING_REST_LENGTH/10);
-      //  particleSystem.makeSpring(a, east, SPRING_STRENGTH/500, SPRING_DAMPING/10, SPRING_REST_LENGTH/10);
-      //  particleSystem.makeSpring(a, west, SPRING_STRENGTH/500, SPRING_DAMPING/10, SPRING_REST_LENGTH/10);
+        particleSystem.makeSpring(a, north, SPRING_STRENGTH/400, SPRING_DAMPING/10, SPRING_REST_LENGTH/10);
+        particleSystem.makeSpring(a, south, SPRING_STRENGTH/800, SPRING_DAMPING/10, SPRING_REST_LENGTH/10);
+        particleSystem.makeSpring(a, east, SPRING_STRENGTH/800, SPRING_DAMPING/10, SPRING_REST_LENGTH/10);
+        particleSystem.makeSpring(a, west, SPRING_STRENGTH/800, SPRING_DAMPING/10, SPRING_REST_LENGTH/10);
       for (int j = i+1; j<shapes.size (); j++) {
         Particle b = shapes.get(j).getParticle();
         println("attraction "+ shapes.get(i).getLabel() +" === "+ shapes.get(j).getLabel()); 

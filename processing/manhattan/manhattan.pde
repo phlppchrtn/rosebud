@@ -1,8 +1,8 @@
 
-final float ATTRACTION_STRENGTH =  -10;  
+final float ATTRACTION_STRENGTH =  -5000;  
 final float ATTRACTION_MIN_DISTANCE = 10;
 
-final float SPRING_STRENGTH = 0.4;
+final float SPRING_STRENGTH = 0.08;
 final float SPRING_DAMPING = 0.4;
 final float SPRING_REST_LENGTH = 50;
 
