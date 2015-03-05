@@ -1,5 +1,5 @@
 class LayerBuilder {
-  private final ParticleSystem particleSystem = new ParticleSystem();
+  private final ParticleSystem particleSystem = new ParticleSystem(0.3, 0.3);
   private final HashMap<String, Integer> ids = new HashMap<String, Integer>();
   private final ArrayList<Shape> shapes = new ArrayList<Shape>();
   private final ArrayList<Link> links  = new ArrayList<Link>();
@@ -13,14 +13,16 @@ class LayerBuilder {
     //-----
     Particle a = shape1.getParticle();
     Particle b = shape2.getParticle();
-    particleSystem.makeAttraction(a, b, -ATTRACTION_STRENGTH, ATTRACTION_MIN_DISTANCE );
+   // particleSystem.makeSpring(a, b, SPRING_STRENGTH, SPRING_DAMPING, SPRING_REST_LENGTH);
+
+//    particleSystem.makeAttraction(a, b, ATTRACTION_STRENGTH, ATTRACTION_MIN_DISTANCE );
     return this;
   }
 
   public LayerBuilder addShape(String id, String shapeType, String label, float x, float y) {
     Shape shape;
     Particle particle =  particleSystem.makeParticle();
-
+    
     if ("box".equals(shapeType)) {
       shape = new Box(new Position(x, y), 100, 100, particle, label);
     } else { 

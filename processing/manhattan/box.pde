@@ -13,6 +13,9 @@ class Box implements  Shape {
     this.label = label;
   } 
 
+  String getLabel(){
+    return label;
+  }
   Position getPosition () {
     return position;
   }

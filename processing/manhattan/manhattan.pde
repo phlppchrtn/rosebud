@@ -1,10 +1,10 @@
 
-final float ATTRACTION_STRENGTH = - 0.7;  
-final float ATTRACTION_MIN_DISTANCE = 1;
+final float ATTRACTION_STRENGTH =  -10;  
+final float ATTRACTION_MIN_DISTANCE = 10;
 
-final float SPRING_STRENGTH = 0.1;
-final float SPRING_DAMPING = 0.5;
-final float SPRING_REST_LENGTH = 300;
+final float SPRING_STRENGTH = 0.4;
+final float SPRING_DAMPING = 0.4;
+final float SPRING_REST_LENGTH = 50;
 
 Layer layer;
 
@@ -19,20 +19,56 @@ color textColor = #333333;
 
 
 void setup() {
-  size(500, 500);
+  size(800, 800);
 
-  layer = new LayerBuilder()
-    .addShape("a", "box", "movie", 10, 10)
-      .addShape("b", "box", "actor", 200, 10)
-        .addShape("c", "box", "producer", 150, 150)
-          .addShape("d", "box", "alias", 10, 150)
-            .addShape("e", "box", "country", 10, 150)
-              .addLink ("a", "c")
-                .addLink ("a", "b")
-                  .addLink ("b", "c")
-                    .addLink ("a", "d")
-                      .addLink ("d", "e")
-                        .build();
+  LayerBuilder layerBuilder = new LayerBuilder();
+  
+  JSONArray dtDefinitions  = loadJSONArray("http://localhost:8080/vertigo/dtdefinitions");
+  for (int i = 0; i < dtDefinitions.size(); i++) {
+    JSONObject dtDefinition = dtDefinitions.getJSONObject(i); 
+    String name = dtDefinition.getString("name");
+    println (name);
+    layerBuilder.addShape(name, "box", name, 10+ 10*i, 10+ 10*i);
+  }
+  JSONArray associations  = loadJSONArray("http://localhost:8080/vertigo/associations");
+  for (int i = 0; i < associations.size(); i++) {
+    JSONObject association = associations.getJSONObject(i); 
+    String nodeA = association.getJSONObject("associationNodeA").getString("dtDefinitionRef");
+    String nodeB = association.getJSONObject("associationNodeB").getString("dtDefinitionRef");
+    println(nodeA+ " --- "+ nodeB);
+    layerBuilder.addLink(nodeA, nodeB);
+  }
+  
+  JSONArray tasks  = loadJSONArray("http://localhost:8080/vertigo/tasks");
+  for (int i = 0; i < tasks.size(); i++) {
+    JSONObject task = tasks.getJSONObject(i);
+    String name = task.getString("name");
+    layerBuilder.addShape(name, "box", name, 12+ 12*i, 12+ 12*i);
+  }
+  
+  JSONArray links  = loadJSONArray("http://localhost:8080/vertigo/taskattributess");
+  for (int i = 0; i < links.size(); i++) {
+    JSONObject link = links.getJSONObject(i); 
+    String nodeA = link.getJSONObject("dtDefinition").getString("name");
+    String nodeB = link.getJSONObject("taskDefinition").getString("name");
+    println(nodeA+ " -+- "+ nodeB);
+    layerBuilder.addLink(nodeA, nodeB);
+  }
+  
+  layer = layerBuilder.build();
+
+  /* layer = new LayerBuilder()
+   .addShape("a", "box", "movie", 10, 10)
+   .addShape("b", "box", "actor", 200, 10)
+   .addShape("c", "box", "producer", 150, 150)
+   .addShape("d", "box", "alias", 10, 150)
+   .addShape("e", "box", "country", 10, 150)
+   .addLink ("a", "c")
+   .addLink ("a", "b")
+   .addLink ("b", "c")
+   .addLink ("a", "d")
+   .addLink ("d", "e")
+   .build();*/
 }
 
 
@@ -73,14 +109,14 @@ void mouseDragged() {
   layer.dragShape(mouseX, mouseY);
 }
 
-/*void keyPressed() {
- backgroundColor = color(1, 110, 115);
- if (key == CODED) {
- if (keyCode == UP) {
- backgroundColor = color(255, 110, 115);
- } 
- else if (keyCode == DOWN) {
- backgroundColor = color(1, 110,255);
- }
- }
- }*/
+void keyPressed() {
+  if (key == CODED) {
+    if (keyCode == UP) {
+      layer.zoomOut();
+    } 
+    else if (keyCode == DOWN) {
+      layer.zoomIn();
+    }
+  }
+}
+

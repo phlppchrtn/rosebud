@@ -7,6 +7,7 @@ interface Shape {
 
   Position getPosition();
 
+  String getLabel();
   Particle getParticle();
 }
 
