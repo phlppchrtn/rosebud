@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+
+<body>
+  <script src="https://d3js.org/d3.v4.js"></script>
+  <script>
+    var alphabet = {
+      h: [
+        { x: 0, y: 0, ry: 5 },
+        { x: 1, y: 2 },
+        { x: 2, y: 0, ry: 5 }],
+      l: [
+        { x: 0, y: 0, ry: 5 },
+        { x: 1, y: 4 },
+        { x: 2, y: 4 }
+      ],
+      e: [
+        { x: 0, y: 0 },
+        { x: 0, y: 1 },
+        { x: 0, y: 2 },
+        { x: 0, y: 3 },
+        { x: 0, y: 4 },
+        { x: 1, y: 0 },
+        { x: 1, y: 2 },
+        { x: 1, y: 4 },
+        { x: 2, y: 0 },
+        { x: 2, y: 2 },
+        { x: 2, y: 4 },
+      ],
+      w: [
+        { x: 0, y: 0 },
+        { x: 0, y: 1 },
+        { x: 0, y: 2 },
+        { x: 0, y: 3 },
+        { x: 1, y: 4 },
+        { x: 2, y: 0 },
+        { x: 2, y: 1 },
+        { x: 2, y: 2 },
+        { x: 2, y: 3 },
+        { x: 3, y: 4 },
+        { x: 4, y: 0 },
+        { x: 4, y: 1 },
+        { x: 4, y: 2 },
+        { x: 4, y: 3 },
+      ],
+      o: [
+        { x: 170, y: 20 },
+        { x: 170, y: 30 },
+        { x: 170, y: 40 },
+        { x: 190, y: 10 },
+        { x: 200, y: 20 },
+        { x: 200, y: 30 },
+        { x: 200, y: 40 },]
+    }
+
+    var data = [
+      { g: "h", tx: 10, ty: 10 },
+      { g: "e", tx: 50, ty: 10 },
+      { g: "l", tx: 90, ty: 10 },
+      { g: "l", tx: 130, ty: 10 },
+
+      { g: "w", tx: 10, ty: 80 },
+
+      { x: 70, y: 90 },
+      { x: 70, y: 100 },
+      { x: 70, y: 110 },
+      { x: 80, y: 80 },
+      { x: 80, y: 120 },
+      { x: 90, y: 80 },
+      { x: 90, y: 120 },
+      { x: 100, y: 90 },
+      { x: 100, y: 100 },
+      { x: 100, y: 110 },
+      { x: 120, y: 80 },
+      { x: 120, y: 90 },
+      { x: 120, y: 100 },
+      { x: 120, y: 110 },
+      { x: 120, y: 120 },
+
+      { x: 130, y: 80 },
+      { x: 130, y: 100 },
+      { x: 140, y: 80 },
+      { x: 140, y: 100 },
+      { x: 140, y: 110 },
+      { x: 150, y: 90 },
+      { x: 150, y: 120 },
+
+      { x: 170, y: 80 },
+      { x: 170, y: 90 },
+      { x: 170, y: 100 },
+      { x: 170, y: 110 },
+      { x: 170, y: 120 },
+      { x: 180, y: 10 },
+      { x: 180, y: 50 },
+      { x: 180, y: 120 },
+      { x: 190, y: 50 },
+      { x: 190, y: 120 },
+
+      { x: 210, y: 80 },
+      { x: 210, y: 90 },
+      { x: 210, y: 100 },
+      { x: 210, y: 110 },
+      { x: 210, y: 120 },
+      { x: 220, y: 80 },
+      { x: 220, y: 120 },
+      { x: 230, y: 80 },
+      { x: 230, y: 120 },
+      { x: 240, y: 90 },
+      { x: 240, y: 100 },
+      { x: 240, y: 110 },
+      { x: 270, y: 70 },
+      { x: 270, y: 80 },
+      { x: 270, y: 90 },
+      { x: 270, y: 100 },
+      { x: 270, y: 120 }
+    ];
+
+    data2 = new Array();
+
+    function drawAlphabet(letter, _data, tx, ty) {
+      var elts = alphabet[letter];
+      for (var i = 0; i < elts.length; i++) {
+        var elt = elts[i];
+        if (elt.ry > 0) {
+          for (var j = 0; j < elt.ry; j++) {
+            var obj2 = new Object();
+            obj2.x = tx + 10 * elt.x;
+            obj2.y = ty + 10 * elt.y + j * 10;
+            _data.push(obj2);
+          }
+        } else if (elt.rx > 0) {
+          for (var j = 0; j < elt.rx; j++) {
+            var obj2 = new Object();
+            obj2.x = tx + 10 * elt.x + j * 10;
+            obj2.y = ty + 10 * elt.y;
+            _data.push(obj2);
+          }
+        } else {
+          var obj2 = new Object();
+          obj2.x = tx + 10 * elt.x;
+          obj2.y = ty + 10 * elt.y;
+          _data.push(obj2);
+        }
+      }
+    }
+
+    for (var i = 0; i < data.length; i++) {
+      var obj = data[i];
+      if (!obj.g) {
+        data2.push(obj);
+      } else {
+        drawAlphabet(obj.g, data2, obj.tx, obj.ty);
+      }
+    }
+
+    d3.select("body").append("svg").selectAll()
+      .data(data2)
+      .enter().append("circle")
+      .attr("r", 3)
+      .attr("cx", function (d) { return d.x; })
+      .attr("cy", function (d) { return d.y; })
+      .style("fill", "darkblue");
+  </script>
