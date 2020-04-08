@@ -3,148 +3,176 @@
 <body>
   <script src="https://d3js.org/d3.v4.js"></script>
   <script>
-    const alphabet = {
-      h: [
-        { x: 0, y: 0 },
-        { x: 0, y: 1 },
-        { x: 0, y: 2 },
-        { x: 0, y: 3 },
-        { x: 0, y: 4 },
-        { x: 1, y: 2 },
-        { x: 2, y: 0 },
-        { x: 2, y: 1 },
-        { x: 2, y: 2 },
-        { x: 2, y: 3 },
-        { x: 2, y: 4 },
-      ],
-      l: [
-        { x: 0, y: 0 },
-        { x: 0, y: 1 },
-        { x: 0, y: 2 },
-        { x: 0, y: 3 },
-        { x: 0, y: 4 },
-        { x: 1, y: 4 },
-        { x: 2, y: 4 }
-      ],
-      e: [
-        { x: 0, y: 0 },
-        { x: 0, y: 1 },
-        { x: 0, y: 2 },
-        { x: 0, y: 3 },
-        { x: 0, y: 4 },
-        { x: 1, y: 0 },
-        { x: 1, y: 2 },
-        { x: 1, y: 4 },
-        { x: 2, y: 0 },
-        { x: 2, y: 2 },
-        { x: 2, y: 4 },
-      ],
-      w: [
-        { x: 0, y: 0 },
-        { x: 0, y: 1 },
-        { x: 0, y: 2 },
-        { x: 0, y: 3 },
-        { x: 1, y: 4 },
-        { x: 2, y: 0 },
-        { x: 2, y: 1 },
-        { x: 2, y: 2 },
-        { x: 2, y: 3 },
-        { x: 3, y: 4 },
-        { x: 4, y: 0 },
-        { x: 4, y: 1 },
-        { x: 4, y: 2 },
-        { x: 4, y: 3 },
-      ],
-      o: [
-        { x: 0, y: 1 },
-        { x: 0, y: 2 },
-        { x: 0, y: 3 },
-        { x: 1, y: 0 },
-        { x: 2, y: 0 },
-        { x: 3, y: 1 },
-        { x: 3, y: 2 },
-        { x: 3, y: 3 },
-        { x: 1, y: 4 },
-        { x: 2, y: 4 },
-      ],
-      r: [
-        { x: 0, y: 0 },
-        { x: 0, y: 1 },
-        { x: 0, y: 2 },
-        { x: 0, y: 3 },
-        { x: 0, y: 4 },
+    const alphabetFonts = {
+      h: {
+        width: 3,
+        elts: [
+          { x: 0, y: 0 },
+          { x: 0, y: 1 },
+          { x: 0, y: 2 },
+          { x: 0, y: 3 },
+          { x: 0, y: 4 },
+          { x: 1, y: 2 },
+          { x: 2, y: 0 },
+          { x: 2, y: 1 },
+          { x: 2, y: 2 },
+          { x: 2, y: 3 },
+          { x: 2, y: 4 },
+        ]
+      },
+      l: {
+        width: 3,
+        elts: [
+          { x: 0, y: 0 },
+          { x: 0, y: 1 },
+          { x: 0, y: 2 },
+          { x: 0, y: 3 },
+          { x: 0, y: 4 },
+          { x: 1, y: 4 },
+          { x: 2, y: 4 }
+        ]
+      },
+      e: {
+        width: 3,
+        elts: [
+          { x: 0, y: 0 },
+          { x: 0, y: 1 },
+          { x: 0, y: 2 },
+          { x: 0, y: 3 },
+          { x: 0, y: 4 },
+          { x: 1, y: 0 },
+          { x: 1, y: 2 },
+          { x: 1, y: 4 },
+          { x: 2, y: 0 },
+          { x: 2, y: 2 },
+          { x: 2, y: 4 },
+        ]
+      },
+      w: {
+        width: 5,
+        elts: [
+          { x: 0, y: 0 },
+          { x: 0, y: 1 },
+          { x: 0, y: 2 },
+          { x: 0, y: 3 },
+          { x: 1, y: 4 },
+          { x: 2, y: 0 },
+          { x: 2, y: 1 },
+          { x: 2, y: 2 },
+          { x: 2, y: 3 },
+          { x: 3, y: 4 },
+          { x: 4, y: 0 },
+          { x: 4, y: 1 },
+          { x: 4, y: 2 },
+          { x: 4, y: 3 },
+        ]
+      },
+      o: {
+        width: 4,
+        elts: [
+          { x: 0, y: 1 },
+          { x: 0, y: 2 },
+          { x: 0, y: 3 },
+          { x: 1, y: 0 },
+          { x: 2, y: 0 },
+          { x: 3, y: 1 },
+          { x: 3, y: 2 },
+          { x: 3, y: 3 },
+          { x: 1, y: 4 },
+          { x: 2, y: 4 },
+        ]
+      },
+      r: {
+        width: 4,
+        elts: [
+          { x: 0, y: 0 },
+          { x: 0, y: 1 },
+          { x: 0, y: 2 },
+          { x: 0, y: 3 },
+          { x: 0, y: 4 },
 
-        { x: 1, y: 0 },
-        { x: 1, y: 2 },
-        { x: 2, y: 0 },
-        { x: 2, y: 2 },
-        { x: 2, y: 3 },
-        { x: 3, y: 1 },
-        { x: 3, y: 4 },
-      ],
-      ex: [
-        { x: 0, y: 0 },
-        { x: 0, y: 1 },
-        { x: 0, y: 2 },
-        { x: 0, y: 3 },
-        { x: 0, y: 5 }
-      ],
-      d: [
-        { x: 0, y: 0 },
-        { x: 0, y: 1 },
-        { x: 0, y: 2 },
-        { x: 0, y: 3 },
-        { x: 0, y: 4 },
-        { x: 1, y: 0 },
-        { x: 1, y: 4 },
-        { x: 2, y: 0 },
-        { x: 2, y: 4 },
-        { x: 3, y: 1 },
-        { x: 3, y: 2 },
-        { x: 3, y: 3 },
-      ]
+          { x: 1, y: 0 },
+          { x: 1, y: 2 },
+          { x: 2, y: 0 },
+          { x: 2, y: 2 },
+          { x: 2, y: 3 },
+          { x: 3, y: 1 },
+          { x: 3, y: 4 },
+        ]
+      },
+      ex: {
+        width: 1,
+        elts: [
+          { x: 0, y: 0 },
+          { x: 0, y: 1 },
+          { x: 0, y: 2 },
+          { x: 0, y: 3 },
+          { x: 0, y: 5 }
+        ]
+      },
+      d: {
+        width: 5,
+        elts: [
+          { x: 0, y: 0 },
+          { x: 0, y: 1 },
+          { x: 0, y: 2 },
+          { x: 0, y: 3 },
+          { x: 0, y: 4 },
+          { x: 1, y: 0 },
+          { x: 1, y: 4 },
+          { x: 2, y: 0 },
+          { x: 2, y: 4 },
+          { x: 3, y: 1 },
+          { x: 3, y: 2 },
+          { x: 3, y: 3 },
+        ]
+      }
     }
 
-    const data = [
-      { g: "h", tx: 10, ty: 10 },
-      { g: "e", tx: 50, ty: 10 },
-      { g: "l", tx: 90, ty: 10 },
-      { g: "l", tx: 130, ty: 10 },
-      { g: "o", tx: 170, ty: 10 },
+    const text = [
+      { g: "h" },
+      { g: "e" },
+      { g: "l" },
+      { g: "l" },
+      { g: "o" },
 
-      { g: "w", tx: 10, ty: 80 },
-      { g: "o", tx: 70, ty: 80 },
-      { g: "r", tx: 120, ty: 80 },
-      { g: "l", tx: 170, ty: 80 },
-      { g: "d", tx: 210, ty: 80 },
-      { g: "ex", tx: 270, ty: 70 },
-
+      { g: "w" },
+      { g: "o" },
+      { g: "r" },
+      { g: "l" },
+      { g: "d" },
+      { g: "ex" },
     ];
 
 
-    function drawAlphabet(letter, _data, tx, ty) {
-      const elts = alphabet[letter];
+    const padding = 10;
+    var offset = padding;
+
+    function drawAlphabet(font, _data) {
+      const width = font.width * 10;
+      const elts = font.elts;
       for (let i = 0; i < elts.length; i++) {
         const elt = elts[i];
-        const obj2 = new Object();
-        obj2.x = tx + 10 * elt.x;
-        obj2.y = ty + 10 * elt.y;
+        const obj2 = {};
+        obj2.x = offset + 10 * elt.x;
+        obj2.y = 10 + 10 * elt.y;
         _data.push(obj2);
       }
+      offset += width + padding;
     }
 
-    const data2 = [];
-    for (let i = 0; i < data.length; i++) {
-      const obj = data[i];
-      if (!obj.g) {
-        data2.push(obj);
-      } else {
-        drawAlphabet(obj.g, data2, obj.tx, obj.ty);
+    const expandData = (_data) => {
+      const _expandedData = [];
+      for (let i = 0; i < _data.length; i++) {
+        const obj = _data[i];
+        drawAlphabet(alphabetFonts[obj.g], _expandedData);
       }
+      return _expandedData
     }
 
+    const data = expandData(text);
     d3.select("body").append("svg").selectAll()
-      .data(data2)
+      .data(data)
       .enter().append("circle")
       .attr("r", 3)
       .attr("cx", function (d) { return d.x; })
