@@ -167,8 +167,8 @@
 
     const expandData = (_data) => {
       const _expandedData = [];
-      for (let i = 0; i < _data.length; i++) {
-        const font = findFont(_data[i]);
+      for  (const d of  _data) {
+        const font = findFont(d);
         drawFont(font, _expandedData);
       }
       return _expandedData
