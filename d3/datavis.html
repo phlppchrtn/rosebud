@@ -139,17 +139,17 @@
     }
 
     const padding = 10;
-    var offset = padding;
 
-    const font2Data = (font, _data) => {
+    const font2Data = (font, offset) => {
       const elts = font.elts;
+      const _data = [];
       for (const elt of elts) {
         const obj2 = {};
         obj2.x = offset + 10 * elt.x;
         obj2.y = 10 + 10 * elt.y;
         _data.push(obj2);
       }
-      offset += font.width * 10 + padding;
+      return _data;
     }
 
     const findFont = (letter) => {
@@ -165,10 +165,12 @@
 
     const text2Data = (text) => {
       const letters = text.split('');
-      const _data = [];
+      let _data = [];
+      let offset = padding;
       for  (const letter of  letters) {
         const font = findFont(letter);
-        font2Data(font, _data);
+        _data = _data.concat(font2Data(font, offset));
+        offset += font.width * 10 + padding;
       }
       return _data
     }
