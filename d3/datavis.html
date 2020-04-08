@@ -3,13 +3,26 @@
 <body>
   <script src="https://d3js.org/d3.v4.js"></script>
   <script>
-    var alphabet = {
+    const alphabet = {
       h: [
-        { x: 0, y: 0, ry: 5 },
+        { x: 0, y: 0 },
+        { x: 0, y: 1 },
+        { x: 0, y: 2 },
+        { x: 0, y: 3 },
+        { x: 0, y: 4 },
         { x: 1, y: 2 },
-        { x: 2, y: 0, ry: 5 }],
+        { x: 2, y: 0 },
+        { x: 2, y: 1 },
+        { x: 2, y: 2 },
+        { x: 2, y: 3 },
+        { x: 2, y: 4 },
+      ],
       l: [
-        { x: 0, y: 0, ry: 5 },
+        { x: 0, y: 0 },
+        { x: 0, y: 1 },
+        { x: 0, y: 2 },
+        { x: 0, y: 3 },
+        { x: 0, y: 4 },
         { x: 1, y: 4 },
         { x: 2, y: 4 }
       ],
@@ -88,11 +101,11 @@
         { x: 2, y: 4 },
         { x: 3, y: 1 },
         { x: 3, y: 2 },
-        { x: 3, y: 3 }, 
+        { x: 3, y: 3 },
       ]
     }
 
-    var data = [
+    const data = [
       { g: "h", tx: 10, ty: 10 },
       { g: "e", tx: 50, ty: 10 },
       { g: "l", tx: 90, ty: 10 },
@@ -108,37 +121,21 @@
 
     ];
 
-    data2 = new Array();
 
     function drawAlphabet(letter, _data, tx, ty) {
-      var elts = alphabet[letter];
-      for (var i = 0; i < elts.length; i++) {
-        var elt = elts[i];
-        if (elt.ry > 0) {
-          for (var j = 0; j < elt.ry; j++) {
-            var obj2 = new Object();
-            obj2.x = tx + 10 * elt.x;
-            obj2.y = ty + 10 * elt.y + j * 10;
-            _data.push(obj2);
-          }
-        } else if (elt.rx > 0) {
-          for (var j = 0; j < elt.rx; j++) {
-            var obj2 = new Object();
-            obj2.x = tx + 10 * elt.x + j * 10;
-            obj2.y = ty + 10 * elt.y;
-            _data.push(obj2);
-          }
-        } else {
-          var obj2 = new Object();
-          obj2.x = tx + 10 * elt.x;
-          obj2.y = ty + 10 * elt.y;
-          _data.push(obj2);
-        }
+      const elts = alphabet[letter];
+      for (let i = 0; i < elts.length; i++) {
+        const elt = elts[i];
+        const obj2 = new Object();
+        obj2.x = tx + 10 * elt.x;
+        obj2.y = ty + 10 * elt.y;
+        _data.push(obj2);
       }
     }
 
-    for (var i = 0; i < data.length; i++) {
-      var obj = data[i];
+    const data2 = [];
+    for (let i = 0; i < data.length; i++) {
+      const obj = data[i];
       if (!obj.g) {
         data2.push(obj);
       } else {
