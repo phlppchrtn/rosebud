@@ -1,7 +1,12 @@
 <!DOCTYPE html>
 
-<body>
+<head>
   <script src="https://d3js.org/d3.v4.js"></script>
+</head>
+
+<body>
+  <svg width="960" height="500"></svg>
+
   <script>
     const alphabetFonts = {
       h: {
@@ -106,8 +111,7 @@
           { x: 0, y: 0 },
           { x: 0, y: 1 },
           { x: 0, y: 2 },
-          { x: 0, y: 3 },
-          { x: 0, y: 5 }
+          { x: 0, y: 4 }
         ]
       },
       d: {
@@ -126,30 +130,19 @@
           { x: 3, y: 2 },
           { x: 3, y: 3 },
         ]
+      },
+      sp: {
+        width: 1,
+        elts: []
       }
+
     }
 
-    const text = [
-      { g: "h" },
-      { g: "e" },
-      { g: "l" },
-      { g: "l" },
-      { g: "o" },
-
-      { g: "w" },
-      { g: "o" },
-      { g: "r" },
-      { g: "l" },
-      { g: "d" },
-      { g: "ex" },
-    ];
-
-
+    const text = "hello world !";
     const padding = 10;
     var offset = padding;
 
-    function drawAlphabet(font, _data) {
-      const width = font.width * 10;
+    const drawFont = (font, _data) => {
       const elts = font.elts;
       for (let i = 0; i < elts.length; i++) {
         const elt = elts[i];
@@ -158,24 +151,36 @@
         obj2.y = 10 + 10 * elt.y;
         _data.push(obj2);
       }
-      offset += width + padding;
+      offset += font.width * 10 + padding;
+    }
+
+    const findFont = (letter) => {
+      let fontIdx = letter;
+      if (letter === ' ') {
+        fontIdx = "sp";
+      }
+      if (letter === '!') {
+        fontIdx = "ex";
+      }
+      return alphabetFonts[fontIdx];
     }
 
     const expandData = (_data) => {
       const _expandedData = [];
       for (let i = 0; i < _data.length; i++) {
-        const obj = _data[i];
-        drawAlphabet(alphabetFonts[obj.g], _expandedData);
+        const font = findFont(_data[i]);
+        drawFont(font, _expandedData);
       }
       return _expandedData
     }
 
-    const data = expandData(text);
-    d3.select("body").append("svg").selectAll()
+    const data = expandData(text.split(''));
+    d3.select("svg").selectAll()
       .data(data)
-      .enter().append("circle")
-      .attr("r", 3)
-      .attr("cx", function (d) { return d.x; })
-      .attr("cy", function (d) { return d.y; })
-      .style("fill", "darkblue");
+      .enter().append('circle')
+      .attr('r', 3)
+      .attr('cx', function (d) { return d.x; })
+      .attr('cy', function (d) { return d.y; })
+      .style('fill', 'darkblue');
   </script>
+</body>
