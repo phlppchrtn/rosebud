@@ -138,14 +138,12 @@
 
     }
 
-    const text = "hello world !";
     const padding = 10;
     var offset = padding;
 
-    const drawFont = (font, _data) => {
+    const font2Data = (font, _data) => {
       const elts = font.elts;
-      for (let i = 0; i < elts.length; i++) {
-        const elt = elts[i];
+      for (const elt of elts) {
         const obj2 = {};
         obj2.x = offset + 10 * elt.x;
         obj2.y = 10 + 10 * elt.y;
@@ -165,16 +163,19 @@
       return alphabetFonts[fontIdx];
     }
 
-    const expandData = (_data) => {
-      const _expandedData = [];
-      for  (const d of  _data) {
-        const font = findFont(d);
-        drawFont(font, _expandedData);
+    const text2Data = (text) => {
+      const letters = text.split('');
+      const _data = [];
+      for  (const letter of  letters) {
+        const font = findFont(letter);
+        font2Data(font, _data);
       }
-      return _expandedData
+      return _data
     }
 
-    const data = expandData(text.split(''));
+    const text = "hello world !";
+    const data = text2Data(text);
+    
     d3.select("svg").selectAll()
       .data(data)
       .enter().append('circle')
