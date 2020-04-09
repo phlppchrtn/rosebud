@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+
+<head>
+  <script src="https://d3js.org/d3.v4.js"></script>
+</head>
+
+<body>
+  <svg width="960" height="500"></svg>
+
+  <script>
+    const alphabetFonts = {
+      h: {
+        width: 3,
+        elts: [
+          { x: 0, y: 0 },
+          { x: 0, y: 1 },
+          { x: 0, y: 2 },
+          { x: 0, y: 3 },
+          { x: 0, y: 4 },
+          { x: 1, y: 2 },
+          { x: 2, y: 0 },
+          { x: 2, y: 1 },
+          { x: 2, y: 2 },
+          { x: 2, y: 3 },
+          { x: 2, y: 4 },
+        ]
+      },
+      l: {
+        width: 3,
+        elts: [
+          { x: 0, y: 0 },
+          { x: 0, y: 1 },
+          { x: 0, y: 2 },
+          { x: 0, y: 3 },
+          { x: 0, y: 4 },
+          { x: 1, y: 4 },
+          { x: 2, y: 4 }
+        ]
+      },
+      e: {
+        width: 3,
+        elts: [
+          { x: 0, y: 0 },
+          { x: 0, y: 1 },
+          { x: 0, y: 2 },
+          { x: 0, y: 3 },
+          { x: 0, y: 4 },
+          { x: 1, y: 0 },
+          { x: 1, y: 2 },
+          { x: 1, y: 4 },
+          { x: 2, y: 0 },
+          { x: 2, y: 2 },
+          { x: 2, y: 4 },
+        ]
+      },
+      w: {
+        width: 5,
+        elts: [
+          { x: 0, y: 0 },
+          { x: 0, y: 1 },
+          { x: 0, y: 2 },
+          { x: 0, y: 3 },
+          { x: 1, y: 4 },
+          { x: 2, y: 0 },
+          { x: 2, y: 1 },
+          { x: 2, y: 2 },
+          { x: 2, y: 3 },
+          { x: 3, y: 4 },
+          { x: 4, y: 0 },
+          { x: 4, y: 1 },
+          { x: 4, y: 2 },
+          { x: 4, y: 3 },
+        ]
+      },
+      o: {
+        width: 4,
+        elts: [
+          { x: 0, y: 1 },
+          { x: 0, y: 2 },
+          { x: 0, y: 3 },
+          { x: 1, y: 0 },
+          { x: 2, y: 0 },
+          { x: 3, y: 1 },
+          { x: 3, y: 2 },
+          { x: 3, y: 3 },
+          { x: 1, y: 4 },
+          { x: 2, y: 4 },
+        ]
+      },
+      r: {
+        width: 4,
+        elts: [
+          { x: 0, y: 0 },
+          { x: 0, y: 1 },
+          { x: 0, y: 2 },
+          { x: 0, y: 3 },
+          { x: 0, y: 4 },
+
+          { x: 1, y: 0 },
+          { x: 1, y: 2 },
+          { x: 2, y: 0 },
+          { x: 2, y: 2 },
+          { x: 2, y: 3 },
+          { x: 3, y: 1 },
+          { x: 3, y: 4 },
+        ]
+      },
+      ex: {
+        width: 1,
+        elts: [
+          { x: 0, y: 0 },
+          { x: 0, y: 1 },
+          { x: 0, y: 2 },
+          { x: 0, y: 4 }
+        ]
+      },
+      d: {
+        width: 5,
+        elts: [
+          { x: 0, y: 0 },
+          { x: 0, y: 1 },
+          { x: 0, y: 2 },
+          { x: 0, y: 3 },
+          { x: 0, y: 4 },
+          { x: 1, y: 0 },
+          { x: 1, y: 4 },
+          { x: 2, y: 0 },
+          { x: 2, y: 4 },
+          { x: 3, y: 1 },
+          { x: 3, y: 2 },
+          { x: 3, y: 3 },
+        ]
+      },
+      sp: {
+        width: 1,
+        elts: []
+      }
+
+    }
+
+    const padding = 10;
+
+    const font2Data = (font, offset) => {
+      const elts = font.elts;
+      const _data = [];
+      for (const elt of elts) {
+        const obj2 = {};
+        obj2.x = offset + 10 * elt.x;
+        obj2.y = 10 + 10 * elt.y;
+        _data.push(obj2);
+      }
+      return _data;
+    }
+
+    const findFont = (letter) => {
+      let fontIdx = letter;
+      if (letter === ' ') {
+        fontIdx = "sp";
+      }
+      if (letter === '!') {
+        fontIdx = "ex";
+      }
+      return alphabetFonts[fontIdx];
+    }
+
+    const text = "hello world !";
+    const letters = text.split('');
+
+    var offset = 10;
+    const y = 10;
+    d3.select("svg")
+      .selectAll('g')
+      .data(letters)
+      .enter()
+      .append('g')
+      .each(function (d) {
+        //        console.log(d);
+        const font = findFont(d); //d is a letter
+        const _data = font2Data(font, 10);
+        d3
+          .select(this)
+          .attr('transform', 'translate('+offset+','+y+')') 
+          .selectAll('circle')
+          .data(_data)
+          .enter()
+          .append('circle')
+          .on('mouseover', function(d, i) {
+              d3.select(this).style('fill', 'orange'); })
+          .attr('r', 3)
+          .attr('cx',function (d) { return d.x; })
+          .attr('cy', function (d) { return d.y; })
+          .style('fill', 'darkblue');
+
+          offset = offset + font.width * 10+padding;
+          console.log ("offset :"+ offset+ ", y:" + y);
+       });
+  </script>
+</body>
