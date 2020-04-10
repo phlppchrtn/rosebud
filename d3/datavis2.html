@@ -11,6 +11,7 @@
     const alphabetFonts = {
       h: {
         width: 3,
+        height: 4,
         elts: [
           { x: 0, y: 0 },
           { x: 0, y: 1 },
@@ -27,6 +28,7 @@
       },
       l: {
         width: 3,
+        height: 4,
         elts: [
           { x: 0, y: 0 },
           { x: 0, y: 1 },
@@ -39,6 +41,7 @@
       },
       e: {
         width: 3,
+        height: 4,
         elts: [
           { x: 0, y: 0 },
           { x: 0, y: 1 },
@@ -55,6 +58,7 @@
       },
       w: {
         width: 5,
+        height: 4,
         elts: [
           { x: 0, y: 0 },
           { x: 0, y: 1 },
@@ -74,6 +78,7 @@
       },
       o: {
         width: 4,
+        height: 4,
         elts: [
           { x: 0, y: 1 },
           { x: 0, y: 2 },
@@ -89,6 +94,7 @@
       },
       r: {
         width: 4,
+        height: 4,
         elts: [
           { x: 0, y: 0 },
           { x: 0, y: 1 },
@@ -107,6 +113,7 @@
       },
       ex: {
         width: 1,
+        height: 4,
         elts: [
           { x: 0, y: 0 },
           { x: 0, y: 1 },
@@ -115,7 +122,8 @@
         ]
       },
       d: {
-        width: 5,
+        width: 4,
+        height: 4,
         elts: [
           { x: 0, y: 0 },
           { x: 0, y: 1 },
@@ -133,6 +141,7 @@
       },
       sp: {
         width: 1,
+        height: 4,
         elts: []
       }
 
@@ -172,26 +181,35 @@
       .data(letters)
       .enter()
       .append('g')
-      .on('mouseover', function (d, i) {
-        d3.selectAll('.g' + i)
-          .style('fill', 'orange');
-      })
-      .on('mouseout', function (d, i) {
-        d3.selectAll('.g' + i)
-          .style('fill', 'darkblue');
-      })
       .each(function (d, i) {
+        const r = 3;
         const font = findFont(d); //d is a letter
         const _data = font2Data(font);
-        d3
+        const group = d3
           .select(this)
-          .attr('transform', 'translate(' + offset + ',' + y + ')')
-          .selectAll('circle')
+          .attr('transform', 'translate(' + offset + ',' + y + ')');
+
+        group.append('rect')
+          .attr('x', 0)
+          .attr('y', 0)
+          .attr('width', font.width * 10)
+          .attr('height', font.height * 10)
+          .attr('fill', '#ccc')
+          .on('mouseover', function (p, j) {
+            d3.selectAll('.g' + i)
+              .style('fill', 'orange');
+          })
+          .on('mouseout', function (p, j) {
+            d3.selectAll('.g' + i)
+              .style('fill', 'darkblue');
+          });
+
+        group.selectAll('circle')
           .data(_data)
           .enter()
           .append('circle')
           .attr('class', (p, j) => { return "g" + i; })
-          .attr('r', 3)
+          .attr('r', r)
           .attr('cx', function (d) { return d.x; })
           .attr('cy', function (d) { return d.y; })
           .style('fill', 'darkblue');
