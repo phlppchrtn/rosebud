@@ -15,12 +15,30 @@
   <script type='module'>
     import { departements } from './data.js';
     import { departements_data } from './data.js';
+
+
+    const bbox = function (node) {
+      var bbox = node.getBBox();
+      
+      d3.select('svg')
+        .append("rect")
+        .attr("x", bbox.x)
+        .attr("y", bbox.y)
+        .attr("width", bbox.width)
+        .attr("height", bbox.height)
+        .style("fill", "none")
+        //    .style("fill-opacity", ".3")
+        .style("stroke", "red")
+        .style("stroke-width", 1);
+    }
+
+    const test = ["01"];
     d3.select('svg')
       .selectAll('path')
       .data(departements)
       .enter()
       .append('path')
-      .attr('d', d => { return  departements_data["d"+d].path; })
+      .attr('d', d => { return departements_data["d" + d].path; })
       .attr('fill', '#ddd')
       .attr('stroke', 'white')
       .attr('stroke-width', 1)
@@ -28,10 +46,14 @@
         d3.select(this)
           .attr('fill', '#aaa');
       })
-      .on('mouseout', function (d, i) {
-        d3.select(this)
-          .attr('fill', '#ddd');
-      })
+      //      .on('mouseout', function (d, i) {
+      //        d3.select(this)
+      //          .attr('fill', '#ddd');
+      //     })
+      .on('click', function (d, i) {
+        const node = d3.select(this).node();
+        bbox(node);
+      });
   </script>
 
 </body>
