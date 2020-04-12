@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+  <script src="https://d3js.org/d3.v4.js"></script>
+
+</head>
+
+<body>
+  <svg xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink" width="100%" viewBox="0 0 588 590">
+  </svg>
+
+  <script type='module'>
+    import { departements } from './data.js';
+    import { departements_data } from './data.js';
+    d3.select('svg')
+      .selectAll('path')
+      .data(departements)
+      .enter()
+      .append('path')
+      .attr('d', d => { return  departements_data["d"+d].path; })
+      .attr('fill', '#ddd')
+      .attr('stroke', 'white')
+      .attr('stroke-width', 1)
+      .on('mouseover', function (d, i) {
+        d3.select(this)
+          .attr('fill', '#aaa');
+      })
+      .on('mouseout', function (d, i) {
+        d3.select(this)
+          .attr('fill', '#ddd');
+      })
+  </script>
+
+</body>
+
+</html>
+
+
+<!DOCTYPE html>
