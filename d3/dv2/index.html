@@ -25,9 +25,9 @@
       console.log(id);
       const bbox = node.getBBox();
 
-       d3.select('svg')
-         .selectAll(".select-departement")
-         .remove();
+      d3.select('svg')
+        .selectAll(".select-departement")
+        .remove();
 
       d3.select('svg')
         .append("rect")
@@ -37,23 +37,25 @@
         .attr("width", bbox.width)
         .attr("height", bbox.height)
         .style("fill", "none")
-        //    .style("fill-opacity", ".3")
+        //---
+        //.style("fill-opacity", ".3")
         .style("stroke", "red")
         .style("stroke-width", 1);
 
-       //----
-       const path = departements_data["d"+id].path; 
-       const translateX= bbX -bbox.x;
-       const translateY= bbY -bbox.y;
-       
-       d3.select('svg')
+      //----
+      const path = departements_data["d" + id].path;
+      const translateX = bbX - bbox.x;
+      const translateY = bbY - bbox.y;
+
+      d3.select('svg')
         .append("path")
         .style("fill", "red")
         .attr('class', 'select-departement')
         .attr('d', path)
-//        .attr("transform", "translate(111, 111)");       
-        .attr("transform", "translate("+translateX+","+translateY+")");       
-
+        .transition()
+        .duration(750)
+        .ease(d3.easeExp)
+        .attr("transform", "translate(" + translateX + "," + translateY + ")");
     }
 
 
@@ -80,11 +82,11 @@
       .data(departements)
       .enter()
       .append('path')
-      .attr('d', d => { 
+      .attr('d', d => {
         const id = "d" + d;
-        return departements_data[id].path; 
+        return departements_data[id].path;
       })
-      .attr('id', d => {   return d; }        )
+      .attr('id', d => { return d; })
       .attr('fill', '#ddd')
       .attr('stroke', 'white')
       .attr('stroke-width', 1)
@@ -115,8 +117,6 @@
       //    .style("fill-opacity", ".3")
       .style("stroke", "red")
       .style("stroke-width", 1);
-
-
   </script>
 
 </body>
