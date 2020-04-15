@@ -13,9 +13,11 @@
   </svg>
 
   <script type='module'>
-  import { drawDepartements } from './index.js';
+    import { departementsMap } from './index.js';
 
-    drawDepartements();  
+    const map = departementsMap();
+    console.log(map);
+    map.draw();  
   </script>
 
 </body>
